@@ -1,0 +1,197 @@
+//
+//  UwbRadar.swift
+//  uwbapp
+//
+//
+
+import SwiftUI
+import EstimoteUWB
+
+struct BeaconItem: Identifiable {
+    let id = UUID()
+    var publicID: String = ""
+    var distance: Float = 0
+    var vector: EstimoteUWB.Vector?
+    var name: String = ""
+    var speed : Double = 0.0
+    var date:String = Date().formattedString()
+    var distanceOverTime : Float = 0
+    
+}
+
+class BeaconList: ObservableObject {
+    @Published var beacons: [BeaconItem]
+    var totalMinutes = 0
+    init(items: [BeaconItem]) {
+        beacons = items
+    }
+    
+    func addBeacon(beacon: BeaconItem) {
+        self.beacons.append(beacon)
+    }
+    
+    func removeBeacon(publicID: String) {
+        var index: Int = 0;
+        for i in 0..<self.beacons.count {
+            index = i
+            if (self.beacons[index].publicID == publicID) {
+                break
+            }
+        }
+//        self.beacons.remove(at: index)
+    }
+    
+    func contains(publicID: String) -> Bool {
+        for i in 0..<self.beacons.count {
+            if self.beacons[i].publicID == publicID {
+                return true
+            }
+        }
+        return false
+    }
+    
+    func updateBeaconDistance(publicID: String, distance: Float) {
+        for i in 0..<self.beacons.count {
+            if self.beacons[i].publicID == publicID {
+                let distanceTravel = self.beacons[i].distance - distance
+                //debugPrint("Old Distance",self.beacons[i].distance)
+                debugPrint("Old distan,New Distance",self.beacons[i].distance,distance)
+                debugPrint("Distance over time",distanceTravel)
+                self.beacons[i].distance = distance
+                self.beacons[i].distanceOverTime = distanceTravel
+                if distance <= 1.0 && totalMinutes <= 0 {
+                    self.totalMinutes += 1
+                    NotificationService.shared.createNotifcation()
+                }
+                break
+            }
+        }
+    }
+
+    func updateBeaconVector(publicID: String, vector: EstimoteUWB.Vector?) {
+        for i in 0..<self.beacons.count {
+            if self.beacons[i].publicID == publicID {
+                
+                // Showing Test Notification
+                
+                self.beacons[i].vector = vector
+                
+                // Creating an object of User Location then get his
+//                let CLocation  = CLLocation(latitude: Double(vector?.x ?? 0.0), longitude: Double(vector?.y ?? 0.0))
+//                self.beacons[i].speed = CLocation.speedAccuracy
+                self.beacons[i].date = Date().formattedString()
+                let diatance = self.beacons[i].distanceOverTime
+                let time = 0.5 //self.beacons[i].date.timeInterval()
+                //0.673 - 0.655 / 0.5
+                let speed = diatance/Float(time)
+                debugPrint("Beacon Speed \(speed.avoidNotation)")
+                self.beacons[i].speed = Double(speed) //Double(speed.avoidNotation) ?? 0.000
+                break
+            }
+        }
+    }
+}
+import CoreLocation
+struct BeaconListView: View {
+    @ObservedObject var list: BeaconList
+    
+    var body: some View {
+        ScrollView{
+            VStack {
+                ForEach(list.beacons) { beacon in
+                    Button {
+                        print("Clicked on  #\(beacon.publicID)")
+                    } label: {
+                        HStack {
+                            // display string
+                            Text("\(beacon.publicID) -> \(String(format: "%.2f",beacon.distance))m").padding(.leading, 10.0)
+                            Text("X \(String(format: "%.2f", beacon.vector?.x ?? 0.0)) Y \(String(format: "%.2f", beacon.vector?.y ?? 0.0)) Z \(String(format: "%.2f", beacon.vector?.z ?? 0.0))")
+                            
+                            Text("Beacon Speed \(beacon.speed)")
+                            
+                            if beacon.speed.sign == .minus {
+                                Text("Beacon is moving away from object")
+                            }
+                            else{
+                                Text("Beacon is moving towards the object")
+                            }
+                            //Text(beacon.speed < 0 ? "Beacon Speed 0" : "Beacon Speed \(beacon.speed)")
+                            
+                            Text("Date \(beacon.date)")
+                            Spacer()
+                        }.padding(.top, 7.0)
+                        .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(hue: 1.0, saturation: 0.0, brightness: 0.81)/*@END_MENU_TOKEN@*/)
+                    }
+                }
+            }
+        }
+        Spacer()
+    }
+    
+    func locationSpeed(x:Float,y:Float){
+        let CLocation  = CLLocation(latitude: Double(x), longitude: Double(y))
+    }
+}
+
+func getview() -> BeaconListView {
+    let dataSource: [BeaconItem] = [
+        BeaconItem(name: ""),
+        BeaconItem(name: ""),
+        BeaconItem(name: ""),
+        BeaconItem(name: ""),
+        BeaconItem(name: ""),
+        BeaconItem(name: ""),
+        BeaconItem(name: ""),
+        BeaconItem(name: ""),
+    ]
+    let list: BeaconList = BeaconList(items: dataSource)
+    let TestView: BeaconListView = BeaconListView(list: list)
+    return TestView
+}
+
+
+
+struct UwbList_Previews: PreviewProvider {
+    static var previews: some View {
+        getview().frame(width: .infinity, height: .infinity, alignment: .top)
+    }
+}
+extension Date{
+    func formattedString()->String{
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+        return dateFormatter.string(from: self)
+    }
+}
+extension String{
+    func timeInterval()->TimeInterval{
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+        
+        
+        
+        guard let date = dateFormatter.date(from: self)
+        else{
+            fatalError()
+        }
+        let dateFormatter1 = DateFormatter()
+        dateFormatter1.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let st  = dateFormatter1.string(from: date)
+        guard let dae = dateFormatter1.date(from: st)
+        else{
+            fatalError()
+        }
+        return dae.timeIntervalSince1970
+        
+    }
+}
+extension Float {
+    var avoidNotation: String {
+//        let numberFormatter = NumberFormatter()
+//        //numberFormatter.max
+//        numberFormatter.numberStyle = .decimal
+//        return numberFormatter.string(for: self) ?? ""
+        let number = NSNumber(value: self)
+        return "\(number.decimalValue)"
+    }
+}
