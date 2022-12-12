@@ -57,7 +57,7 @@ extension UWBManager: UWBPositioningObserver {
 // OPTIONAL PROTOCOL FOR BEACON BLE RANGING
 extension UWBManager: BeaconRangingObserver {
     func didRange(for beacon: BLEDevice) {
-        print("BLE beacon did range: \(beacon)")
+       // print("BLE beacon did range: \(beacon)")
     }
 }
 
@@ -68,7 +68,7 @@ extension UWBManager: UWBDiscoveryObserver {
     }
 
     func didDiscover(device: UWBIdentifable, with rssi: NSNumber, from manager: EstimoteUWBManager) {
-        print("Discovered Device: \(device.publicId) rssi: \(rssi)")
+//        print("Discovered Device: \(device.publicId) rssi: \(rssi)")
         
         let dataHelper = DataHelper()
         dataHelper.buildData(deviceId: device.publicId)
@@ -83,16 +83,16 @@ extension UWBManager: UWBDiscoveryObserver {
     }
 
     func didConnect(to device: UWBIdentifable) {
-        print("Successfully Connected to: \(device.publicId) name -> \(device.name ?? "Unknown")")
+//        print("Successfully Connected to: \(device.publicId) name -> \(device.name ?? "Unknown")")
     }
 
     func didDisconnect(from device: UWBIdentifable, error: Error?) {
         self.beaconDisconnectCallBack(device.publicId)
         
-        print("Beacon is disconnected: ID -> \(device.publicId) Name -> \(device.name ?? "Unknown")")
+//        print("Beacon is disconnected: ID -> \(device.publicId) Name -> \(device.name ?? "Unknown")")
     }
 
     func didFailToConnect(to device: UWBIdentifable, error: Error?) {
-        print("Failed to conenct to: \(device.publicId) - error: \(String(describing: error))")
+//        print("Failed to conenct to: \(device.publicId) - error: \(String(describing: error))")
     }
 }

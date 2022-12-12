@@ -17,8 +17,8 @@ class FirebaseManager {
     func storeData(data: DataInfo) {
         dbRef.child(data.path).setValue(data.dataString)
         
-        print("Path: \(data.path)")
-        print("Value: \(data.dataString)")
+//        print("Path: \(data.path)")
+//        print("Value: \(data.dataString)")
         
     }
 }

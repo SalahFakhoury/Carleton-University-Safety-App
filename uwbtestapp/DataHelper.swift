@@ -24,7 +24,7 @@ class DataHelper {
         
         let dist = HelperUtility.getNumber(requiredDigit: 3, number: distance)
         
-        print("Arafat distance: \(dist)")
+//        print("Arafat distance: \(dist)")
 
         let distanceData = DataInfo(path: getDistancePath(), dataString: "\(dist)m")
         FirebaseManager.shared.storeData(data: distanceData)

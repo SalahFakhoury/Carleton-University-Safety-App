@@ -22,6 +22,19 @@ struct BeaconItem: Identifiable {
 class BeaconList: ObservableObject {
     @Published var beacons: [BeaconItem]
     var totalMinutes = 0
+    var firstBeaconDistance : Float = 0
+    var secondBeaconDistance : Float = 0
+    var thirdBeaconDistance : Float = 0
+    var fourthBeaconDistance : Float = 0
+    var fifthBeaconDistance : Float = 0
+    
+    var firstBeaconName : String = ""
+    var secondBeaconName : String = ""
+    var thirdBeaconName : String = ""
+    var fourthBeaconName : String = ""
+    var fifthBeaconName : String = ""
+    
+    
     init(items: [BeaconItem]) {
         beacons = items
     }
@@ -55,8 +68,9 @@ class BeaconList: ObservableObject {
             if self.beacons[i].publicID == publicID {
                 let distanceTravel = self.beacons[i].distance - distance
                 //debugPrint("Old Distance",self.beacons[i].distance)
-                debugPrint("Old distan,New Distance",self.beacons[i].distance,distance)
-                debugPrint("Distance over time",distanceTravel)
+               // debugPrint("Old distan,New Distance",self.beacons[i].distance,distance)
+                //debugPrint("Distance over time",distanceTravel)
+                
                 self.beacons[i].distance = distance
                 self.beacons[i].distanceOverTime = distanceTravel
                 if distance <= 1.0 && totalMinutes <= 0 {
@@ -70,6 +84,72 @@ class BeaconList: ObservableObject {
 
     func updateBeaconVector(publicID: String, vector: EstimoteUWB.Vector?) {
         for i in 0..<self.beacons.count {
+            
+            if i == 0{
+                firstBeaconDistance = self.beacons[i].distance
+                let value = self.beacons[i].publicID
+                firstBeaconName = String(value.prefix(2))
+            }else if i == 1{
+                secondBeaconDistance = self.beacons[i].distance
+                let value = self.beacons[i].publicID
+                secondBeaconName = String(value.prefix(2))
+            }else if i == 2{
+               thirdBeaconDistance = self.beacons[i].distance
+                let value = self.beacons[i].publicID
+                thirdBeaconName = String(value.prefix(2))
+            }else if i == 3{
+               fourthBeaconDistance = self.beacons[i].distance
+                let value = self.beacons[i].publicID
+                fourthBeaconName = String(value.prefix(2))
+            }else if i == 4{
+                fifthBeaconDistance = self.beacons[i].distance
+                let value = self.beacons[i].publicID
+                fifthBeaconName = String(value.prefix(3))
+            }
+            
+            if firstBeaconDistance > 0 && secondBeaconDistance > 0{
+                let value1 = (firstBeaconDistance * firstBeaconDistance)
+                let value2 = (secondBeaconDistance * secondBeaconDistance)
+                let sqrt = sqrt(value1 + value2)
+                print("Distance between",firstBeaconName,"and",secondBeaconName,sqrt)
+            }
+            if secondBeaconDistance > 0 &&  thirdBeaconDistance > 0{
+                let value1 = (secondBeaconDistance * secondBeaconDistance)
+                let value2 = (thirdBeaconDistance * thirdBeaconDistance)
+                let sqrt = sqrt(value1 + value2)
+                print("Distance between",secondBeaconName,"and",thirdBeaconName, sqrt)
+            }
+            if thirdBeaconDistance > 0 && fourthBeaconDistance > 0{
+                let value1 = (thirdBeaconDistance * thirdBeaconDistance)
+                let value2 = (fourthBeaconDistance * fourthBeaconDistance)
+                let sqrt = sqrt(value1 + value2)
+                print("Distance between",thirdBeaconName,"and", fourthBeaconName, sqrt)
+            }
+            if fourthBeaconDistance > 0 && firstBeaconDistance > 0{
+                let value1 = (fourthBeaconDistance * fourthBeaconDistance)
+                let value2 = (firstBeaconDistance * firstBeaconDistance)
+                let sqrt = sqrt(value1 + value2)
+                print("Distance between",fourthBeaconName,"and", firstBeaconName, sqrt)
+            }
+            if fifthBeaconDistance > 0 && fourthBeaconDistance > 0{
+                let value1 = (fifthBeaconDistance * fifthBeaconDistance)
+                let value2 = (fourthBeaconDistance * fourthBeaconDistance)
+                let sqrt = sqrt(value1 + value2)
+                print("Distance between",fifthBeaconName,"and", fourthBeaconName, sqrt)
+            }
+            
+          /*  if self.beacons.count >= 2{
+                let firstbeacon = self.beacons[0].distance
+                let secondbeacon = self.beacons[1].distance
+                let value1 = (firstbeacon * firstbeacon)
+                let value2 = (secondbeacon * secondbeacon)
+                let sqrt = sqrt(value1 + value2)
+                print(sqrt)
+                
+            } */
+          
+
+            
             if self.beacons[i].publicID == publicID {
                 
                 // Showing Test Notification
@@ -84,8 +164,19 @@ class BeaconList: ObservableObject {
                 let time = 0.5 //self.beacons[i].date.timeInterval()
                 //0.673 - 0.655 / 0.5
                 let speed = diatance/Float(time)
-                debugPrint("Beacon Speed \(speed.avoidNotation)")
+               // debugPrint("Beacon vector \(vector?.x)" )
+                //debugPrint("Beacon Speed \(speed.avoidNotation)")
                 self.beacons[i].speed = Double(speed) //Double(speed.avoidNotation) ?? 0.000
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
                 break
             }
         }

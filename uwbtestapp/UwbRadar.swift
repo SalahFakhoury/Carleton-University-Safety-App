@@ -90,7 +90,7 @@ class UwbRadarCircleGroup: ObservableObject {
             self.animationInterval = (animationSpeed * 1000.0) / Float((self._numCircles + 1))
             toggleColor()
         } else {
-            print("Already Animating!")
+//            print("Already Animating!")
         }
     }
 }
