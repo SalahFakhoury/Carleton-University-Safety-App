@@ -109,36 +109,58 @@ class BeaconList: ObservableObject {
             
             
             if firstBeaconDistance > 0 && secondBeaconDistance > 0 && thirdBeaconDistance > 0 && self.beacons.count == 3{
-                var a = CGPoint()
-                var b = CGPoint()
-                var c = CGPoint()
+//                var a = CGPoint()
+//                var b = CGPoint()
+//                var c = CGPoint()
                 
                 let dA = firstBeaconDistance
                 let dB = secondBeaconDistance
                 let dC = thirdBeaconDistance
                 
-                if let beaconAVector = self.beacons[0].vector{
-                    a = CGPoint(x: CGFloat(beaconAVector.x), y: CGFloat(beaconAVector.y))
-                }
-                if let beaconBVector = self.beacons[1].vector{
-                    b = CGPoint(x: CGFloat(beaconBVector.x), y: CGFloat(beaconBVector.y))
-                }
-                if let beaconCVector = self.beacons[2].vector{
-                    c = CGPoint(x: CGFloat(beaconCVector.x), y: CGFloat(beaconCVector.y))
-                }
+//                if let beaconAVector = self.beacons[0].vector{
+////                    a = CGPoint(x: CGFloat(beaconAVector.x), y: CGFloat(beaconAVector.y))
+//                    a = CGPoint(x: 0, y: 0 )
+//                }
+//                if let beaconBVector = self.beacons[1].vector{
+////                    b = CGPoint(x: CGFloat(beaconBVector.x), y: CGFloat(beaconBVector.y))
+//                    b = CGPoint(x: CGFloat(secondBeaconDistance), y: 0)
+//                }
+//                if let beaconCVector = self.beacons[2].vector{
+////                    c = CGPoint(x: CGFloat(beaconCVector.x), y: CGFloat(beaconCVector.y))
+//                    c = CGPoint(x: 0, y: CGFloat(thirdBeaconDistance))
+//                }
+                
+                let a = CGPoint(x: 0, y: 0)
+                let b = CGPoint(x: CGFloat(secondBeaconDistance), y: 0)
+                let c = CGPoint(x: 0, y: CGFloat(thirdBeaconDistance))
                 
                 
-                let W = (dA*dA) - (dB*dB) - (a.x*a.x) - (a.y*a.y) + (b.x*b.x) + (b.y*b.y)
-                let Z = dB*dB - dC*dC - b.x*b.x - b.y*b.y + c.x*c.x + c.y*c.y;
+                
+                let w1 = (dA*dA) - (dB*dB)
+                let w2 = (a.x*a.x) - (a.y*a.y)
+                let w3 = (b.x*b.x) + (b.y*b.y)
+                
+                
+                let W =  CGFloat(w1) - w2 + w3//(dA*dA) - (dB*dB) - (a.x*a.x) - (a.y*a.y) + (b.x*b.x) + (b.y*b.y)
+                
+                let z1 =  dB*dB - dC*dC
+                let z2 =  b.x*b.x - b.y*b.y
+                let z3 = c.x*c.x + c.y*c.y
+                
+                
+                
+                
+                let Z = CGFloat(z1) - z2 + z3 //dB*dB - dC*dC - b.x*b.x - b.y*b.y + c.x*c.x + c.y*c.y;
 
                 let x = (W*(c.y-b.y) - Z*(b.y-a.y)) / (2 * ((b.x-a.x)*(c.y-b.y) - (c.x-b.x)*(b.y-a.y)));
-                let y = (W - 2*x*(b.x-a.x)) / (2*(b.y-a.y));
+                let y = (W - 2*x*(b.x-a.x)) / (2*(b.y-a.y))
                 //y2 is a second measure of y to mitigate errors
-                let y2 = (Z - 2*x*(c.x-b.x)) / (2*(c.y-b.y));
+                let y2 = ((Z - 2*x*(c.x-b.x)) / (2*(c.y-b.y))) + 2
 
-                y = (y + y2) / 2;
+                let y3 = (y + y2) / 2;
 
-                let value = CGPointMake(x, y)
+                let value = CGPointMake(x, y2)
+                print(value)
             }
             
             
