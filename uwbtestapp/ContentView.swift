@@ -44,7 +44,7 @@ struct ContentView: View {
         VStack {
             HStack(){
                 Spacer();
-                Text("Estimote UWB").font(.system(size: 20)).fontWeight(.bold)
+                Text("Carleton University Safety App").font(.system(size: 20)).fontWeight(.bold)
                 Spacer();
             }
             .padding(.bottom, 10.0)

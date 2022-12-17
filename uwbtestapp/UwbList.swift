@@ -71,6 +71,7 @@ class BeaconList: ObservableObject {
                // debugPrint("Old distan,New Distance",self.beacons[i].distance,distance)
                 //debugPrint("Distance over time",distanceTravel)
                 
+                
                 self.beacons[i].distance = distance
                 self.beacons[i].distanceOverTime = distanceTravel
                 if distance <= 1.0 && totalMinutes <= 0 {
@@ -78,6 +79,8 @@ class BeaconList: ObservableObject {
                     NotificationService.shared.createNotifcation()
                 }
                 break
+                
+                
             }
         }
     }
@@ -85,14 +88,21 @@ class BeaconList: ObservableObject {
     func updateBeaconVector(publicID: String, vector: EstimoteUWB.Vector?) {
         for i in 0..<self.beacons.count {
             
+            
+         
+            
+            
+            
             if i == 0{
                 firstBeaconDistance = self.beacons[i].distance
                 let value = self.beacons[i].publicID
                 firstBeaconName = String(value.prefix(2))
+               // print(firstBeaconName, self.beacons[i].speed)
             }else if i == 1{
                 secondBeaconDistance = self.beacons[i].distance
                 let value = self.beacons[i].publicID
                 secondBeaconName = String(value.prefix(2))
+               // print(secondBeaconName, self.beacons[i].speed)
             }else if i == 2{
                thirdBeaconDistance = self.beacons[i].distance
                 let value = self.beacons[i].publicID
@@ -112,7 +122,6 @@ class BeaconList: ObservableObject {
 //                var a = CGPoint()
 //                var b = CGPoint()
 //                var c = CGPoint()
-                
                 let dA = firstBeaconDistance
                 let dB = secondBeaconDistance
                 let dC = thirdBeaconDistance
@@ -160,7 +169,7 @@ class BeaconList: ObservableObject {
                 let y3 = (y + y2) / 2;
 
                 let value = CGPointMake(x, y2)
-                print(value)
+//                print(value)
             }
             
             
@@ -169,31 +178,31 @@ class BeaconList: ObservableObject {
                 let value1 = (firstBeaconDistance * firstBeaconDistance)
                 let value2 = (secondBeaconDistance * secondBeaconDistance)
                 let sqrt = sqrt(value1 + value2)
-                print("Distance between",firstBeaconName,"and",secondBeaconName,sqrt)
+//                print("Distance between",firstBeaconName,"and",secondBeaconName,sqrt)
             }
             if secondBeaconDistance > 0 &&  thirdBeaconDistance > 0{
                 let value1 = (secondBeaconDistance * secondBeaconDistance)
                 let value2 = (thirdBeaconDistance * thirdBeaconDistance)
                 let sqrt = sqrt(value1 + value2)
-                print("Distance between",secondBeaconName,"and",thirdBeaconName, sqrt)
+                //print("Distance between",secondBeaconName,"and",thirdBeaconName, sqrt)
             }
             if thirdBeaconDistance > 0 && fourthBeaconDistance > 0{
                 let value1 = (thirdBeaconDistance * thirdBeaconDistance)
                 let value2 = (fourthBeaconDistance * fourthBeaconDistance)
                 let sqrt = sqrt(value1 + value2)
-                print("Distance between",thirdBeaconName,"and", fourthBeaconName, sqrt)
+                //print("Distance between",thirdBeaconName,"and", fourthBeaconName, sqrt)
             }
             if fourthBeaconDistance > 0 && firstBeaconDistance > 0{
                 let value1 = (fourthBeaconDistance * fourthBeaconDistance)
                 let value2 = (firstBeaconDistance * firstBeaconDistance)
                 let sqrt = sqrt(value1 + value2)
-                print("Distance between",fourthBeaconName,"and", firstBeaconName, sqrt)
+                //print("Distance between",fourthBeaconName,"and", firstBeaconName, sqrt)
             }
             if fifthBeaconDistance > 0 && fourthBeaconDistance > 0{
                 let value1 = (fifthBeaconDistance * fifthBeaconDistance)
                 let value2 = (fourthBeaconDistance * fourthBeaconDistance)
                 let sqrt = sqrt(value1 + value2)
-                print("Distance between",fifthBeaconName,"and", fourthBeaconName, sqrt)
+               // print("Distance between",fifthBeaconName,"and", fourthBeaconName, sqrt)
             }
             
           /*  if self.beacons.count >= 2{
@@ -219,12 +228,18 @@ class BeaconList: ObservableObject {
 //                self.beacons[i].speed = CLocation.speedAccuracy
                 self.beacons[i].date = Date().formattedString()
                 let diatance = self.beacons[i].distanceOverTime
+//                print(diatance)
                 let time = 0.5 //self.beacons[i].date.timeInterval()
                 //0.673 - 0.655 / 0.5
+                
                 let speed = diatance/Float(time)
                // debugPrint("Beacon vector \(vector?.x)" )
                 //debugPrint("Beacon Speed \(speed.avoidNotation)")
-                self.beacons[i].speed = Double(speed) //Double(speed.avoidNotation) ?? 0.000
+                if speed != 0{
+                    print(speed)
+                    self.beacons[i].speed = Double(speed) //Double(speed.avoidNotation) ?? 0.000
+                }
+                
                 
                 
                 
@@ -248,22 +263,31 @@ struct BeaconListView: View {
         ScrollView{
             VStack {
                 ForEach(list.beacons) { beacon in
+//                    let _ = print(beacon.speed)
                     Button {
-                        print("Clicked on  #\(beacon.publicID)")
+//                        print("Clicked on  #\(beacon.publicID)")
                     } label: {
                         HStack {
                             // display string
-                            Text("\(beacon.publicID) -> \(String(format: "%.2f",beacon.distance))m").padding(.leading, 10.0)
-                            Text("X \(String(format: "%.2f", beacon.vector?.x ?? 0.0)) Y \(String(format: "%.2f", beacon.vector?.y ?? 0.0)) Z \(String(format: "%.2f", beacon.vector?.z ?? 0.0))")
                             
-                            Text("Beacon Speed \(beacon.speed)")
+                            let value = beacon.publicID
+                            let publicid = String(value.prefix(2))
                             
-                            if beacon.speed.sign == .minus {
-                                Text("Beacon is moving away from object")
-                            }
-                            else{
-                                Text("Beacon is moving towards the object")
-                            }
+//                            print(publicid, beacon.speed)
+                            
+                            Text("Beacon id \(publicid) -> \(String(format: "%.2f",beacon.distance))m").padding(.leading, 10.0)
+                            //Text("X \(String(format: "%.2f", beacon.vector?.x ?? 0.0)) Y \(String(format: "%.2f", beacon.vector?.y ?? 0.0)) Z \(String(format: "%.2f", beacon.vector?.z ?? 0.0))")
+                            
+                            
+                            Text("Beacon Speed \(String(format: "%.2f", beacon.speed))")
+//                            Text("Beacon Speed \(beacon.speed)")
+                            
+//                            if beacon.speed.sign == .minus {
+//                                Text("Beacon is moving away from object")
+//                            }
+//                            else{
+//                                Text("Beacon is moving towards the object")
+//                            }
                             //Text(beacon.speed < 0 ? "Beacon Speed 0" : "Beacon Speed \(beacon.speed)")
                             
                             Text("Date \(beacon.date)")

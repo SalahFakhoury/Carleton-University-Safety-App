@@ -53,7 +53,7 @@
 		86972C09290984BB00054551 /* DataInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataInfo.swift; sourceTree = "<group>"; };
 		86E7D316290ADEC5009CCCE9 /* DataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataHelper.swift; sourceTree = "<group>"; };
 		93A2B992130526BBAE5C2D09 /* Pods_uwbtestapp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_uwbtestapp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D0F3198327924DD300075045 /* uwbtestapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = uwbtestapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D0F3198327924DD300075045 /* Carleton University Safety App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Carleton University Safety App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0F3198627924DD300075045 /* uwbtestappApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = uwbtestappApp.swift; sourceTree = "<group>"; };
 		D0F3198827924DD300075045 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		D0F3198A27924DD400075045 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -98,7 +98,7 @@
 		D0F3198427924DD300075045 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D0F3198327924DD300075045 /* uwbtestapp.app */,
+				D0F3198327924DD300075045 /* Carleton University Safety App.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -162,7 +162,7 @@
 			);
 			name = uwbtestapp;
 			productName = uwbtestapp;
-			productReference = D0F3198327924DD300075045 /* uwbtestapp.app */;
+			productReference = D0F3198327924DD300075045 /* Carleton University Safety App.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -428,7 +428,7 @@
 				);
 				MARKETING_VERSION = 2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.salah.uwbapp.uwbapp;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Carleton University Safety App";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -470,7 +470,7 @@
 				);
 				MARKETING_VERSION = 2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.salah.uwbapp.uwbapp;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Carleton University Safety App";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
