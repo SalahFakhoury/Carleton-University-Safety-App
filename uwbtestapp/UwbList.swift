@@ -34,6 +34,8 @@ class BeaconList: ObservableObject {
     var fourthBeaconName : String = ""
     var fifthBeaconName : String = ""
     
+    var oldTime = Date()
+    
     
     init(items: [BeaconItem]) {
         beacons = items
@@ -224,24 +226,43 @@ class BeaconList: ObservableObject {
                 self.beacons[i].vector = vector
                 
                 // Creating an object of User Location then get his
-//                let CLocation  = CLLocation(latitude: Double(vector?.x ?? 0.0), longitude: Double(vector?.y ?? 0.0))
-//                self.beacons[i].speed = CLocation.speedAccuracy
+                //                let CLocation  = CLLocation(latitude: Double(vector?.x ?? 0.0), longitude: Double(vector?.y ?? 0.0))
+                //                self.beacons[i].speed = CLocation.speedAccuracy
                 self.beacons[i].date = Date().formattedString()
                 let diatance = self.beacons[i].distanceOverTime
-//                print(diatance)
-                let time = 0.5 //self.beacons[i].date.timeInterval()
+                //                print(diatance)
+                
+                //print(oldTime,Date())
+                let tempDate = Date()
+                let elapsed = Date().timeIntervalSince(oldTime)
+                oldTime = tempDate
+                
+                
+                // print(elapsed)
+                let tempElapsed = Int(elapsed * 10)
+               // print(tempElapsed)
+                if tempElapsed > 0{
+                    
+                
+                
+                let time = elapsed //self.beacons[i].date.timeInterval()
                 //0.673 - 0.655 / 0.5
                 
                 let speed = diatance/Float(time)
-               // debugPrint("Beacon vector \(vector?.x)" )
+                // debugPrint("Beacon vector \(vector?.x)" )
                 //debugPrint("Beacon Speed \(speed.avoidNotation)")
                 if speed != 0{
-                    print(speed)
+                    
                     self.beacons[i].speed = Double(speed) //Double(speed.avoidNotation) ?? 0.000
+                    
+                    
+                    print(elapsed, Double(speed))
                 }
+                //                if speed > 0.3{
+                //                    print(speed,self.beacons[i].date, self.beacons[i].distance/speed)
+                //                }
                 
-                
-                
+            }
                 
                 
                 
@@ -275,7 +296,7 @@ struct BeaconListView: View {
                             
 //                            print(publicid, beacon.speed)
                             
-                            Text("Beacon id \(publicid) -> \(String(format: "%.2f",beacon.distance))m").padding(.leading, 10.0)
+                            Text("Beacon id# \(publicid) -> \(String(format: "%.2f",beacon.distance))m").padding(.leading, 10.0)
                             //Text("X \(String(format: "%.2f", beacon.vector?.x ?? 0.0)) Y \(String(format: "%.2f", beacon.vector?.y ?? 0.0)) Z \(String(format: "%.2f", beacon.vector?.z ?? 0.0))")
                             
                             
