@@ -78,7 +78,7 @@ class BeaconList: ObservableObject {
                 self.beacons[i].distanceOverTime = distanceTravel
                 if distance <= 1.0 && totalMinutes <= 0 {
                     self.totalMinutes += 1
-                    NotificationService.shared.createNotifcation()
+//                    NotificationService.shared.createNotifcation()
                 }
                 break
                 
@@ -256,11 +256,20 @@ class BeaconList: ObservableObject {
                     self.beacons[i].speed = Double(speed) //Double(speed.avoidNotation) ?? 0.000
                     
                     
-                    print(elapsed, Double(speed))
+                   // print(elapsed, Double(speed))
                 }
-                //                if speed > 0.3{
-                //                    print(speed,self.beacons[i].date, self.beacons[i].distance/speed)
-                //                }
+                
+                let timeToColision = self.beacons[i].distance/speed
+                let tempDistance = self.beacons[i].distance
+                    
+                if tempDistance < 1.0 && timeToColision < 3.0{
+                    print(timeToColision,tempDistance)
+                        NotificationService.shared.createNotifcation()
+                }
+
+                if speed > 0.3{
+                   // print(speed,self.beacons[i].date, self.beacons[i].distance/speed)
+                }
                 
             }
                 
@@ -301,6 +310,10 @@ struct BeaconListView: View {
                             
                             
                             Text("Beacon Speed \(String(format: "%.2f", beacon.speed))")
+                            
+                            let timeToColision = beacon.distance / Float(beacon.speed)
+                            
+                            Text("Time To Collision \(String(format: "%.2f", timeToColision))")
 //                            Text("Beacon Speed \(beacon.speed)")
                             
 //                            if beacon.speed.sign == .minus {

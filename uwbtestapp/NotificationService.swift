@@ -25,14 +25,14 @@ class NotificationService:NSObject,UNUserNotificationCenterDelegate{
             }
         }
     }
-    
+            
     func createNotifcation(){
         let content = UNMutableNotificationContent()
         content.title = "Safety App"
         content.subtitle = "Critical HAZARD"
         content.sound = UNNotificationSound(named: .init(rawValue: "loud-alarm-tone.mp3")) //UNNotificationSound.default
         
-        let tigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.5, repeats: false)
+        let tigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.2, repeats: false)
         
         let id = "Alert"
         let request = UNNotificationRequest(identifier:id, content: content, trigger: tigger)
