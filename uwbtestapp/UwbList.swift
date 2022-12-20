@@ -308,12 +308,35 @@ struct BeaconListView: View {
                             Text("Beacon id# \(publicid) -> \(String(format: "%.2f",beacon.distance))m").padding(.leading, 10.0)
                             //Text("X \(String(format: "%.2f", beacon.vector?.x ?? 0.0)) Y \(String(format: "%.2f", beacon.vector?.y ?? 0.0)) Z \(String(format: "%.2f", beacon.vector?.z ?? 0.0))")
                             
-                            
-                            Text("Beacon Speed \(String(format: "%.2f", beacon.speed))")
+                            let beaconSpeed = String(format: "%.2f", beacon.speed)
+                            Text("Beacon Speed \(beaconSpeed)")
                             
                             let timeToColision = beacon.distance / Float(beacon.speed)
+                            let strTimeToColision = String(format: "%.2f", timeToColision)
+                            Text("Time To Collision \(strTimeToColision)")
                             
-                            Text("Time To Collision \(String(format: "%.2f", timeToColision))")
+                            let dataHelper = DataHelper()
+                            dataHelper.buildData(deviceId: beacon.publicID)
+                            
+                            let speedPath = dataHelper.getSpeedPath()
+                            let coordinatePath = dataHelper.getBeaconLocationPath()
+                            let ttcPath = dataHelper.getTimeToCollisionPath()
+                            
+                            
+                            let x = HelperUtility.getNumber(requiredDigit: 3, number: beacon.vector?.x ?? 0.0)
+                            let y = HelperUtility.getNumber(requiredDigit: 3, number: beacon.vector?.y ?? 0.0)
+                            let z = HelperUtility.getNumber(requiredDigit: 3, number: beacon.vector?.z ?? 0.0)
+                            let locString = "(\(x), \(y), \(z))"
+
+                            let speedData = DataInfo(path: speedPath, dataString: "\(beaconSpeed)")
+                            let beaconLocationData = DataInfo(path: coordinatePath, dataString: locString)
+                            let ttcData = DataInfo(path: ttcPath, dataString: "\(strTimeToColision)")
+                            
+                            FirebaseManager.shared.storeData(data: speedData)
+                            FirebaseManager.shared.storeData(data: beaconLocationData)
+                            FirebaseManager.shared.storeData(data: ttcData)
+                            
+
 //                            Text("Beacon Speed \(beacon.speed)")
                             
 //                            if beacon.speed.sign == .minus {

@@ -49,8 +49,8 @@ extension UWBManager: UWBPositioningObserver {
         
         let beaconLocationData = DataInfo(path: beaconPath, dataString: locString)
         
-        FirebaseManager.shared.storeData(data: distanceData)
-        FirebaseManager.shared.storeData(data: beaconLocationData)
+    //    FirebaseManager.shared.storeData(data: distanceData)
+//        FirebaseManager.shared.storeData(data: beaconLocationData)
     }
 }
 
@@ -76,7 +76,7 @@ extension UWBManager: UWBDiscoveryObserver {
         let rssiPath = dataHelper.getRSSIPath()
         let beaconLocationData = DataInfo(path: rssiPath, dataString: "\(rssi)")
         
-        FirebaseManager.shared.storeData(data: beaconLocationData)
+       // FirebaseManager.shared.storeData(data: beaconLocationData)
 
         // if shouldConnectAutomatically is set to false - then you could call manager.connect(to: device)
         // additionally you can globally call discoonect from the scope where you have inititated EstimoteUWBManager -> disconnect(from: device) or disconnect(from: publicId)

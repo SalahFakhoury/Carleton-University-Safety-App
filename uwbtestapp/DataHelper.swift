@@ -12,8 +12,14 @@ class DataHelper {
     private let dateFString = "yyyy-MM-dd"
     private let timeFString = "yyyy-MM-dd_HH:mm:ss-SSS"
     private let distanceKey = "Distance"
-    private let beaconLocKey = "Coordinate"
     private let rssiKey = "rssi"
+    
+    private let speedKey = "Speed"
+    private let beaconLocKey = "Coordinate"
+    private let ttcKey = "Time to Collision"
+
+    
+    
     
     private var path: String = "Salah/Path"
     
@@ -48,8 +54,17 @@ class DataHelper {
         return "\(path)/\(distanceKey)"
     }
     
+    
+    func getSpeedPath() -> String{
+        return "\(path)/\(speedKey)"
+    }
+    
     func getBeaconLocationPath() -> String {
         return "\(path)/\(beaconLocKey)"
+    }
+    
+    func getTimeToCollisionPath() -> String{
+        return "\(path)/\(ttcKey)"
     }
     
     func getRSSIPath() -> String {
