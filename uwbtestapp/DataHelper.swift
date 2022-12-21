@@ -17,7 +17,7 @@ class DataHelper {
     private let speedKey = "Speed"
     private let beaconLocKey = "Coordinate"
     private let ttcKey = "Time to Collision"
-
+    
     
     
     
@@ -66,6 +66,8 @@ class DataHelper {
     func getTimeToCollisionPath() -> String{
         return "\(path)/\(ttcKey)"
     }
+    
+   
     
     func getRSSIPath() -> String {
         return "\(path)/\(rssiKey)"

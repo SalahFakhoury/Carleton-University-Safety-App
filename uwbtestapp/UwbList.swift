@@ -166,15 +166,61 @@ class BeaconList: ObservableObject {
                 let x = (W*(c.y-b.y) - Z*(b.y-a.y)) / (2 * ((b.x-a.x)*(c.y-b.y) - (c.x-b.x)*(b.y-a.y)));
                 let y = (W - 2*x*(b.x-a.x)) / (2*(b.y-a.y))
                 //y2 is a second measure of y to mitigate errors
-                let y2 = ((Z - 2*x*(c.x-b.x)) / (2*(c.y-b.y))) + 2
+                let y2 = ((Z - 2*x*(c.x-b.x)) / (2*(c.y-b.y)))
 
                 let y3 = (y + y2) / 2;
 
                 let value = CGPointMake(x, y2)
-//                print(value)
+                print(value)
             }
             
             
+            // Distance and position wrt static values
+            let firstDistance = 4.70
+            let secondDistance = 5.57
+          
+            
+            let value1 = (firstDistance * firstDistance)
+            let value2 = (secondDistance * secondDistance)
+            let thirdDistance = sqrt(value1 + value2)
+            
+            print(String(format:"%.2f",thirdDistance))
+            
+            let beacon50 = CGPoint(x: 0, y: 0)
+            let beacon11 = CGPoint(x: CGFloat(secondDistance), y: 0)
+            let beacon10 = CGPoint(x: 0, y: CGFloat(thirdDistance))
+            
+            let dA = firstDistance
+            let dB = secondDistance
+            let dC = thirdDistance
+            
+            
+            let w1 = (dA*dA) - (dB*dB)
+            let w2 = (beacon50.x*beacon50.x) - (beacon50.y*beacon50.y)
+            let w3 = (beacon11.x*beacon11.x) + (beacon11.y*beacon11.y)
+            
+            
+            let W =  CGFloat(w1) - w2 + w3//(dA*dA) - (dB*dB) - (a.x*a.x) - (a.y*a.y) + (b.x*b.x) + (b.y*b.y)
+            
+            let z1 =  dB*dB - dC*dC
+            let z2 =  beacon11.x*beacon11.x - beacon11.y*beacon11.y
+            let z3 = beacon10.x*beacon10.x + beacon10.y*beacon10.y
+            
+            
+            
+            
+            let Z = CGFloat(z1) - z2 + z3 //dB*dB - dC*dC - b.x*b.x - b.y*b.y + c.x*c.x + c.y*c.y;
+
+            let x = (W*(beacon10.y-beacon11.y) - Z*(beacon11.y-beacon50.y)) / (2 * ((beacon11.x-beacon50.x)*(beacon10.y-beacon11.y) - (beacon10.x-beacon11.x)*(beacon11.y-beacon50.y)));
+            let y = (W - 2*x*(beacon11.x-beacon50.x)) / (2*(beacon11.y-beacon50.y))
+            //y2 is a second measure of y to mitigate errors
+            let y2 = ((Z - 2*x*(beacon10.x-beacon11.x)) / (2*(beacon10.y-beacon11.y))) + 2
+
+            let y3 = (y + y2) / 2;
+
+            let value = CGPointMake(x, y2)
+           // print(value)
+            print(String(format:"%.2f, %.2f",value.x, value.y))
             
             if firstBeaconDistance > 0 && secondBeaconDistance > 0{
                 let value1 = (firstBeaconDistance * firstBeaconDistance)
@@ -273,8 +319,36 @@ class BeaconList: ObservableObject {
                 
             }
                 
+                let dataHelper = DataHelper()
+                dataHelper.buildData(deviceId: self.beacons[i].publicID)
                 
+                let speedPath = dataHelper.getSpeedPath()
+                let coordinatePath = dataHelper.getBeaconLocationPath()
+                let ttcPath = dataHelper.getTimeToCollisionPath()
+                let distancePath = dataHelper.getDistancePath()
                 
+                let x = HelperUtility.getNumber(requiredDigit: 3, number: Float(value.x ))
+                let y = HelperUtility.getNumber(requiredDigit: 3, number: Float(value.y ))
+                //let z = HelperUtility.getNumber(requiredDigit: 3, number: self.beacons[i].vector?.z ?? 0.0)
+//                let locString = "(\(x), \(y))"
+                let locX = String(format:"%.2f",x)
+                let locY = String(format:"%.2f",y)
+                let locString = "(\(locX), \(locY))"
+                
+                let beaconSpeed = String(format: "%.2f", self.beacons[i].speed)
+                let timeToColision = self.beacons[i].distance / Float(self.beacons[i].speed)
+                let strTimeToColision = String(format: "%.2f", timeToColision)
+                let strDistance = String(format:"%.2f", self.beacons[i].distance)
+                
+                let speedData = DataInfo(path: speedPath, dataString: "\(beaconSpeed)")
+                let beaconLocationData = DataInfo(path: coordinatePath, dataString: locString)
+                let ttcData = DataInfo(path: ttcPath, dataString: "\(strTimeToColision)")
+                let distanceData = DataInfo(path: distancePath, dataString: "\(strDistance)")
+                
+                FirebaseManager.shared.storeData(data: speedData)
+                FirebaseManager.shared.storeData(data: beaconLocationData)
+                FirebaseManager.shared.storeData(data: ttcData)
+                FirebaseManager.shared.storeData(data: distanceData)
                 
                 
                 
@@ -315,26 +389,6 @@ struct BeaconListView: View {
                             let strTimeToColision = String(format: "%.2f", timeToColision)
                             Text("Time To Collision \(strTimeToColision)")
                             
-                            let dataHelper = DataHelper()
-                            dataHelper.buildData(deviceId: beacon.publicID)
-                            
-                            let speedPath = dataHelper.getSpeedPath()
-                            let coordinatePath = dataHelper.getBeaconLocationPath()
-                            let ttcPath = dataHelper.getTimeToCollisionPath()
-                            
-                            
-                            let x = HelperUtility.getNumber(requiredDigit: 3, number: beacon.vector?.x ?? 0.0)
-                            let y = HelperUtility.getNumber(requiredDigit: 3, number: beacon.vector?.y ?? 0.0)
-                            let z = HelperUtility.getNumber(requiredDigit: 3, number: beacon.vector?.z ?? 0.0)
-                            let locString = "(\(x), \(y), \(z))"
-
-                            let speedData = DataInfo(path: speedPath, dataString: "\(beaconSpeed)")
-                            let beaconLocationData = DataInfo(path: coordinatePath, dataString: locString)
-                            let ttcData = DataInfo(path: ttcPath, dataString: "\(strTimeToColision)")
-                            
-                            FirebaseManager.shared.storeData(data: speedData)
-                            FirebaseManager.shared.storeData(data: beaconLocationData)
-                            FirebaseManager.shared.storeData(data: ttcData)
                             
 
 //                            Text("Beacon Speed \(beacon.speed)")
