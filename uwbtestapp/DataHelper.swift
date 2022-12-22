@@ -59,6 +59,7 @@ class DataHelper {
         return "\(path)/\(speedKey)"
     }
     
+    
     func getBeaconLocationPath() -> String {
         return "\(path)/\(beaconLocKey)"
     }
@@ -66,8 +67,6 @@ class DataHelper {
     func getTimeToCollisionPath() -> String{
         return "\(path)/\(ttcKey)"
     }
-    
-   
     
     func getRSSIPath() -> String {
         return "\(path)/\(rssiKey)"

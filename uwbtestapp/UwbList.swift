@@ -90,11 +90,6 @@ class BeaconList: ObservableObject {
     func updateBeaconVector(publicID: String, vector: EstimoteUWB.Vector?) {
         for i in 0..<self.beacons.count {
             
-            
-         
-            
-            
-            
             if i == 0{
                 firstBeaconDistance = self.beacons[i].distance
                 let value = self.beacons[i].publicID
@@ -144,8 +139,6 @@ class BeaconList: ObservableObject {
                 let a = CGPoint(x: 0, y: 0)
                 let b = CGPoint(x: CGFloat(secondBeaconDistance), y: 0)
                 let c = CGPoint(x: 0, y: CGFloat(thirdBeaconDistance))
-                
-                
                 
                 let w1 = (dA*dA) - (dB*dB)
                 let w2 = (a.x*a.x) - (a.y*a.y)
@@ -282,7 +275,10 @@ class BeaconList: ObservableObject {
                 let tempDate = Date()
                 let elapsed = Date().timeIntervalSince(oldTime)
                 oldTime = tempDate
-                
+
+                let dataHelper = DataHelper()
+               
+
                 
                 // print(elapsed)
                 let tempElapsed = Int(elapsed * 10)
@@ -310,7 +306,21 @@ class BeaconList: ObservableObject {
                     
                 if tempDistance < 1.0 && timeToColision < 3.0{
                     print(timeToColision,tempDistance)
-                        NotificationService.shared.createNotifcation()
+                    NotificationService.shared.createNotifcation()
+                    
+                    dataHelper.buildData(deviceId: "TimeToCollisionNotification")
+                    
+                    let strDistance = String(format:"%.2f", tempDistance)
+                    let strTimeToColision = String(format: "%.2f", timeToColision)
+
+                    let ttcPath = dataHelper.getTimeToCollisionPath()
+                    let distancePath = dataHelper.getDistancePath()
+                    
+                    let ttcData = DataInfo(path: ttcPath, dataString: "\(strTimeToColision)")
+                    let distanceData = DataInfo(path: distancePath, dataString: "\(strDistance)")
+                     
+                    FirebaseManager.shared.storeData(data: ttcData)
+                    FirebaseManager.shared.storeData(data: distanceData)
                 }
 
                 if speed > 0.3{
@@ -319,7 +329,6 @@ class BeaconList: ObservableObject {
                 
             }
                 
-                let dataHelper = DataHelper()
                 dataHelper.buildData(deviceId: self.beacons[i].publicID)
                 
                 let speedPath = dataHelper.getSpeedPath()
@@ -360,6 +369,21 @@ class BeaconList: ObservableObject {
     }
 }
 import CoreLocation
+
+struct MovingView: View{
+    @State var poinwd = [(12.0, 10.0), (22.0, 20.0), (32.0, 30.0),(42.0, 40.0),(52.0, 50.0),(62.0, 60.0)].map({CGPoint(x: $0.0, y: $0.1)})
+
+    var body: some View{
+        VStack {
+            ForEach(0..<poinwd.count, id: \.self) { item in
+                Color.red.frame(width: 10, height: 10).position(x:poinwd[item].x, y: poinwd[item].y)
+            }
+            
+        }
+    }
+}
+
+
 struct BeaconListView: View {
     @ObservedObject var list: BeaconList
     

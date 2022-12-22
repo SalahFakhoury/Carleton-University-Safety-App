@@ -17,6 +17,7 @@ func zoneBuilder(tag: String, range: ProximityRange, onEnterCallBack: @escaping 
 }
 
 struct ContentView: View {
+    let points = [(12.0, 10.0), (22.0, 20.0), (32.0, 30.0),(42.0, 40.0),(52.0, 50.0),(62.0, 60.0)].map({CGPoint(x: $0.0, y: $0.1)})
 
     let beaconList: BeaconList
     let uwbManger: UWBManager
@@ -50,7 +51,16 @@ struct ContentView: View {
             .padding(.bottom, 10.0)
             .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color.yellow/*@END_MENU_TOKEN@*/)
             Spacer();
-            UwbRadar(circleGroup: UwbRadarCircleGroup(numCircles: 20, baseRadius: 15), baseRadius: 15)
+            ZStack(){
+                UwbRadar(circleGroup: UwbRadarCircleGroup(numCircles: 20, baseRadius: 15), baseRadius: 15)
+                
+//                for point in points {
+//                    Color.red.frame(width: 10, height: 10).position(x:point.x, y: point.y)
+//
+//                }
+                
+            }
+            
             BeaconListView(list: beaconList)
             Spacer()
             HStack(){
