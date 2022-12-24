@@ -35,7 +35,7 @@ class BeaconList: ObservableObject {
     var fifthBeaconName : String = ""
     
     var oldTime = Date()
-    
+    var oldNotifiationTime = Date()
     
     init(items: [BeaconItem]) {
         beacons = items
@@ -67,12 +67,13 @@ class BeaconList: ObservableObject {
     
     func updateBeaconDistance(publicID: String, distance: Float) {
         for i in 0..<self.beacons.count {
+            
             if self.beacons[i].publicID == publicID {
                 let distanceTravel = self.beacons[i].distance - distance
                 //debugPrint("Old Distance",self.beacons[i].distance)
                // debugPrint("Old distan,New Distance",self.beacons[i].distance,distance)
                 //debugPrint("Distance over time",distanceTravel)
-                
+//                let _ = print("updateBeaconDistance : \(publicID) \(distance)")
                 
                 self.beacons[i].distance = distance
                 self.beacons[i].distanceOverTime = distanceTravel
@@ -90,6 +91,8 @@ class BeaconList: ObservableObject {
     func updateBeaconVector(publicID: String, vector: EstimoteUWB.Vector?) {
         for i in 0..<self.beacons.count {
             
+//            let _ = print("updateBeaconVector \(publicID) \(self.beacons[i].distance)")
+//            let _ = print("updateBeaconVector \(self.beacons[i].speed)")
             if i == 0{
                 firstBeaconDistance = self.beacons[i].distance
                 let value = self.beacons[i].publicID
@@ -164,7 +167,7 @@ class BeaconList: ObservableObject {
                 let y3 = (y + y2) / 2;
 
                 let value = CGPointMake(x, y2)
-                print(value)
+//                print(value)
             }
             
             
@@ -177,7 +180,7 @@ class BeaconList: ObservableObject {
             let value2 = (secondDistance * secondDistance)
             let thirdDistance = sqrt(value1 + value2)
             
-            print(String(format:"%.2f",thirdDistance))
+            //print(String(format:"%.2f",thirdDistance))
             
             let beacon50 = CGPoint(x: 0, y: 0)
             let beacon11 = CGPoint(x: CGFloat(secondDistance), y: 0)
@@ -213,7 +216,7 @@ class BeaconList: ObservableObject {
 
             let value = CGPointMake(x, y2)
            // print(value)
-            print(String(format:"%.2f, %.2f",value.x, value.y))
+           // print(String(format:"%.2f, %.2f",value.x, value.y))
             
             if firstBeaconDistance > 0 && secondBeaconDistance > 0{
                 let value1 = (firstBeaconDistance * firstBeaconDistance)
@@ -269,7 +272,7 @@ class BeaconList: ObservableObject {
                 //                self.beacons[i].speed = CLocation.speedAccuracy
                 self.beacons[i].date = Date().formattedString()
                 let diatance = self.beacons[i].distanceOverTime
-                //                print(diatance)
+//                                print(diatance)
                 
                 //print(oldTime,Date())
                 let tempDate = Date()
@@ -282,7 +285,7 @@ class BeaconList: ObservableObject {
                 
                 // print(elapsed)
                 let tempElapsed = Int(elapsed * 10)
-               // print(tempElapsed)
+               
                 if tempElapsed > 0{
                     
                 
@@ -294,19 +297,32 @@ class BeaconList: ObservableObject {
                 // debugPrint("Beacon vector \(vector?.x)" )
                 //debugPrint("Beacon Speed \(speed.avoidNotation)")
                 if speed != 0{
-                    
+                    //print(elapsed,diatance)
                     self.beacons[i].speed = Double(speed) //Double(speed.avoidNotation) ?? 0.000
-                    
-                    
+                     
                    // print(elapsed, Double(speed))
                 }
+
                 
-                let timeToColision = self.beacons[i].distance/speed
+//                let timeToColision = self.beacons[i].distance/speed
+                let timeToColision = self.beacons[i].distance/Float(self.beacons[i].speed)
                 let tempDistance = self.beacons[i].distance
                     
-                if tempDistance < 1.0 && timeToColision < 3.0{
-                    print(timeToColision,tempDistance)
-                    NotificationService.shared.createNotifcation()
+                if tempDistance <= 1.0 || (timeToColision <= 3.0 && timeToColision >= 0){
+//                    print("Notfication",timeToColision,tempDistance)
+                    
+                    let tempDate = Date()
+                    let elapsed = Date().timeIntervalSince(oldNotifiationTime)
+                  // print(tempDate, oldNotifiationTime)
+                   
+                    let tempElapsed = Int(elapsed * 10)
+                    oldNotifiationTime = tempDate
+                    
+                    if tempElapsed >= 10 {
+                       // print(tempElapsed)
+                        NotificationService.shared.createNotifcation()
+                       
+                    }
                     
                     dataHelper.buildData(deviceId: "TimeToCollisionNotification")
                     
@@ -388,51 +404,140 @@ struct BeaconListView: View {
     @ObservedObject var list: BeaconList
     
     var body: some View {
-        ScrollView{
-            VStack {
-                ForEach(list.beacons) { beacon in
-//                    let _ = print(beacon.speed)
-                    Button {
-//                        print("Clicked on  #\(beacon.publicID)")
-                    } label: {
-                        HStack {
-                            // display string
-                            
-                            let value = beacon.publicID
-                            let publicid = String(value.prefix(2))
-                            
-//                            print(publicid, beacon.speed)
-                            
-                            Text("Beacon id# \(publicid) -> \(String(format: "%.2f",beacon.distance))m").padding(.leading, 10.0)
-                            //Text("X \(String(format: "%.2f", beacon.vector?.x ?? 0.0)) Y \(String(format: "%.2f", beacon.vector?.y ?? 0.0)) Z \(String(format: "%.2f", beacon.vector?.z ?? 0.0))")
-                            
-                            let beaconSpeed = String(format: "%.2f", beacon.speed)
-                            Text("Beacon Speed \(beaconSpeed)")
-                            
-                            let timeToColision = beacon.distance / Float(beacon.speed)
-                            let strTimeToColision = String(format: "%.2f", timeToColision)
-                            Text("Time To Collision \(strTimeToColision)")
-                            
-                            
-
-//                            Text("Beacon Speed \(beacon.speed)")
-                            
-//                            if beacon.speed.sign == .minus {
-//                                Text("Beacon is moving away from object")
-//                            }
-//                            else{
-//                                Text("Beacon is moving towards the object")
-//                            }
-                            //Text(beacon.speed < 0 ? "Beacon Speed 0" : "Beacon Speed \(beacon.speed)")
-                            
-                            Text("Date \(beacon.date)")
-                            Spacer()
-                        }.padding(.top, 7.0)
-                        .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(hue: 1.0, saturation: 0.0, brightness: 0.81)/*@END_MENU_TOKEN@*/)
-                    }
+        
+        VStack{
+            
+            VStack{
+//                let _ = print("List updated")
+                
+                let date = String(DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .none))
+                Text("Date: \(date)")
+                HStack{
+                    
+                    Text("Beacon Id#")
+                        .frame(width: UIScreen.main.bounds.size.width/6)
+                        .foregroundColor(.black)
+                        .multilineTextAlignment(.center)
+                        .padding(.leading)
+                    Text("Distance")
+                        .frame(width: UIScreen.main.bounds.size.width/6)
+                        .foregroundColor(.black)
+                        .multilineTextAlignment(.center)
+                    Text("Speed")
+                        .frame(width: UIScreen.main.bounds.size.width/6)
+                        .foregroundColor(.black)
+                        .multilineTextAlignment(.center)
+                    Text("Time To Collsion")
+                        .frame(width: UIScreen.main.bounds.size.width/6)
+                        .foregroundColor(.black)
+                        .multilineTextAlignment(.center)
+                    Text("Time")
+                        .frame(width: UIScreen.main.bounds.size.width/6)
+                        .foregroundColor(.black)
+                        .padding(.trailing)
+                        .multilineTextAlignment(.center)
                 }
+                .padding(.top)
+              
             }
+            
+            List(list.beacons){beacon in
+                HStack{
+                    let value = beacon.publicID
+                    let publicid = String(value.prefix(2))
+                    
+                    Text(publicid)
+                        .frame(width: UIScreen.main.bounds.size.width/6)
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.black)
+                        .padding(.leading)
+                    
+                    Text("\(String(format: "%.2f",beacon.distance))m")
+                        .frame(width: UIScreen.main.bounds.size.width/6)
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.black)
+                    
+                    let beaconSpeed = String(format: "%.2f", beacon.speed)
+                    Text(beaconSpeed)
+                        .frame(width: UIScreen.main.bounds.size.width/6)
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.black)
+                    
+                    let timeToColision = beacon.distance / Float(beacon.speed)
+                    let strTimeToColision = String(format: "%.2f", timeToColision)
+                    Text(strTimeToColision)
+                        .frame(width: UIScreen.main.bounds.size.width/6)
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.black)
+                    
+                   // let time = String(DateFormatter.localizedString(from: Date(), dateStyle: .none, timeStyle: .short))
+                   
+                    let time = Date().formattedStringMiliSec()
+                    Text(time)
+                        .lineLimit(2)
+                        .frame(width: UIScreen.main.bounds.size.width/6)
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.black)
+                        .padding(.trailing)
+                }
+                
+            }
+            .background(.white)
+            .foregroundColor(.white)
+            .listRowSeparator(.hidden)
+            .listStyle(PlainListStyle())
+            
+            .id(UUID())
+            
         }
+       
+        
+        
+//        ScrollView{
+//            VStack {
+//                ForEach(list.beacons) { beacon in
+////                    let _ = print(beacon.speed)
+//                    Button {
+////                        print("Clicked on  #\(beacon.publicID)")
+//                    } label: {
+//                        HStack {
+//                            // display string
+//
+//                            let value = beacon.publicID
+//                            let publicid = String(value.prefix(2))
+//
+////                            print(publicid, beacon.speed)
+//
+//                            Text("Beacon id# \(publicid) -> \(String(format: "%.2f",beacon.distance))m").padding(.leading, 10.0)
+//                            //Text("X \(String(format: "%.2f", beacon.vector?.x ?? 0.0)) Y \(String(format: "%.2f", beacon.vector?.y ?? 0.0)) Z \(String(format: "%.2f", beacon.vector?.z ?? 0.0))")
+//
+//                            let beaconSpeed = String(format: "%.2f", beacon.speed)
+//                            Text("Beacon Speed \(beaconSpeed)")
+//
+//                            let timeToColision = beacon.distance / Float(beacon.speed)
+//                            let strTimeToColision = String(format: "%.2f", timeToColision)
+//                            Text("Time To Collision \(strTimeToColision)")
+//
+//                            Text("Date \(beacon.date)")
+//
+////                            Text("Beacon Speed \(beacon.speed)")
+//
+////                            if beacon.speed.sign == .minus {
+////                                Text("Beacon is moving away from object")
+////                            }
+////                            else{
+////                                Text("Beacon is moving towards the object")
+////                            }
+//                            //Text(beacon.speed < 0 ? "Beacon Speed 0" : "Beacon Speed \(beacon.speed)")
+//
+//
+//                            Spacer()
+//                        }.padding(.top, 7.0)
+//                        .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color(hue: 1.0, saturation: 0.0, brightness: 0.81)/*@END_MENU_TOKEN@*/)
+//                    }
+//                }
+//            }
+//        }
         Spacer()
     }
     
@@ -468,6 +573,12 @@ extension Date{
     func formattedString()->String{
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+        return dateFormatter.string(from: self)
+    }
+    
+    func formattedStringMiliSec()->String{
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "H:mm:ss.SSS"
         return dateFormatter.string(from: self)
     }
 }

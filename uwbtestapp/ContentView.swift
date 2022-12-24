@@ -51,17 +51,19 @@ struct ContentView: View {
             .padding(.bottom, 10.0)
             .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color.yellow/*@END_MENU_TOKEN@*/)
             Spacer();
-            ZStack(){
+            VStack{
+                //            ZStack(){
                 UwbRadar(circleGroup: UwbRadarCircleGroup(numCircles: 20, baseRadius: 15), baseRadius: 15)
                 
-//                for point in points {
-//                    Color.red.frame(width: 10, height: 10).position(x:point.x, y: point.y)
-//
-//                }
+                //                for point in points {
+                //                    Color.red.frame(width: 10, height: 10).position(x:point.x, y: point.y)
+                //
+                //                }
                 
+                //            }
+                
+                BeaconListView(list: beaconList)
             }
-            
-            BeaconListView(list: beaconList)
             Spacer()
             HStack(){
                 Button {
@@ -81,7 +83,7 @@ struct ContentView: View {
                 }.padding(.bottom);
             }.padding([.leading, .trailing], 40.0)
         }
-        .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color.white/*@END_MENU_TOKEN@*/)
+        .background(.white)
     }
 }
 

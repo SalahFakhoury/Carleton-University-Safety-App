@@ -32,7 +32,7 @@ class NotificationService:NSObject,UNUserNotificationCenterDelegate{
         content.subtitle = "Critical HAZARD"
         content.sound = UNNotificationSound(named: .init(rawValue: "loud-alarm-tone.mp3")) //UNNotificationSound.default
         
-        let tigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.2, repeats: false)
+        let tigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
         
         let id = "Alert"
         let request = UNNotificationRequest(identifier:id, content: content, trigger: tigger)
