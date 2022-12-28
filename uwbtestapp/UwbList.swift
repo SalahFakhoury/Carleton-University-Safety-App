@@ -36,6 +36,8 @@ class BeaconList: ObservableObject {
     
     var oldTime = Date()
     var oldNotifiationTime = Date()
+    var previousSpeed : Double = 0.0
+    
     
     init(items: [BeaconItem]) {
         beacons = items
@@ -296,10 +298,18 @@ class BeaconList: ObservableObject {
                 let speed = diatance/Float(time)
                 // debugPrint("Beacon vector \(vector?.x)" )
                 //debugPrint("Beacon Speed \(speed.avoidNotation)")
+                
+                let avgSpeed = (previousSpeed + Double(speed)) / 2
+                print("Avg. Speed",avgSpeed)
+                previousSpeed = Double(speed)
+                    
                 if speed != 0{
                     //print(elapsed,diatance)
                     self.beacons[i].speed = Double(speed) //Double(speed.avoidNotation) ?? 0.000
-                     
+                    
+                    
+                    
+                    
                    // print(elapsed, Double(speed))
                 }
 
@@ -321,7 +331,6 @@ class BeaconList: ObservableObject {
                     if tempElapsed >= 10 {
                        // print(tempElapsed)
                         NotificationService.shared.createNotifcation()
-                       
                     }
                     
                     dataHelper.buildData(deviceId: "TimeToCollisionNotification")
