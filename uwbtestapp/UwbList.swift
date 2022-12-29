@@ -17,7 +17,8 @@ struct BeaconItem: Identifiable {
     var date:String = Date().formattedString()
     var distanceOverTime : Float = 0
     var accelaration : Double = 0.0
-    var level : String = ""
+    var levelColor : Color = .white
+    var isLevelOn = false
     
 }
 
@@ -340,7 +341,8 @@ class BeaconList: ObservableObject {
                     }
                     
                     if timeToColision >= 0 && timeToColision <= 1{
-                        self.beacons[i].level = "High"
+                        self.beacons[i].levelColor = .red
+                        self.beacons[i].isLevelOn = true
                         dataHelper.buildDataForTTC(deviceId: "TimeToCollision Notification", level: "High Risk")
                         
                         let strDistance = String(format:"%.2f", tempDistance)
@@ -356,7 +358,8 @@ class BeaconList: ObservableObject {
                         FirebaseManager.shared.storeData(data: ttcData)
                         FirebaseManager.shared.storeData(data: distanceData)
                     }else if timeToColision >= 1 && timeToColision <= 2{
-                        self.beacons[i].level = "Moderate"
+                        self.beacons[i].levelColor = .yellow
+                        self.beacons[i].isLevelOn = true
                         dataHelper.buildDataForTTC(deviceId: "TimeToCollision Notification", level: "Moderate Risk")
                         
                         let strDistance = String(format:"%.2f", tempDistance)
@@ -372,7 +375,8 @@ class BeaconList: ObservableObject {
                         FirebaseManager.shared.storeData(data: ttcData)
                         FirebaseManager.shared.storeData(data: distanceData)
                     }else if timeToColision >= 2 && timeToColision <= 3{
-                        self.beacons[i].level = "Low"
+                        self.beacons[i].levelColor = .green
+                        self.beacons[i].isLevelOn = true
                         dataHelper.buildDataForTTC(deviceId: "TimeToCollision Notification", level: "Low Risk")
                         
                         let strDistance = String(format:"%.2f", tempDistance)
@@ -387,6 +391,10 @@ class BeaconList: ObservableObject {
                         
                         FirebaseManager.shared.storeData(data: ttcData)
                         FirebaseManager.shared.storeData(data: distanceData)
+                    }
+                  
+                    DispatchQueue.main.asyncAfter(deadline: .now() +  1.0) {
+                        self.beacons[i].isLevelOn = false
                     }
                 }
 
@@ -531,7 +539,7 @@ struct BeaconListView: View {
                         .foregroundColor(.black)
                         .padding(.trailing)
                 }
-                .back
+                .background(beacon.isLevelOn ? beacon.levelColor : .white)
                 
             }
             .background(.white)
@@ -593,6 +601,11 @@ struct BeaconListView: View {
         Spacer()
     }
     
+//    private func changeBackgroundColor(beacon:BeaconItem) async{
+//        try? await Task.sleep(nanoseconds: 1_000_000_000)
+//        beacon.isLevelOn = false
+//
+//    }
     func locationSpeed(x:Float,y:Float){
         let CLocation  = CLLocation(latitude: Double(x), longitude: Double(y))
     }
