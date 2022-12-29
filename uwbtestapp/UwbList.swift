@@ -19,6 +19,7 @@ struct BeaconItem: Identifiable {
     var accelaration : Double = 0.0
     var levelColor : Color = .white
     var isLevelOn = false
+    var finalTTC : Double = 0.0
     
 }
 
@@ -305,7 +306,7 @@ class BeaconList: ObservableObject {
                     
                     self.beacons[i].accelaration = accelaration
                     
-                    print(accelaration)
+                    //print(accelaration)
                     
                 previousSpeed = Double(speed)
                     
@@ -321,6 +322,21 @@ class BeaconList: ObservableObject {
 //              let timeToColision = self.beacons[i].distance/speed
                 let timeToColision = self.beacons[i].distance/Float(self.beacons[i].speed)
                 let tempDistance = self.beacons[i].distance
+                    
+                    
+                    let innerValues = self.beacons[i].speed * 2 + 2 * self.beacons[i].accelaration * Double(self.beacons[i].distance)
+                    
+                    let sqrtValues = sqrt(innerValues)
+                    
+                    let tempValues = -self.beacons[i].speed + sqrtValues
+                    
+                    let frontValues = self.beacons[i].accelaration * tempValues
+                    
+                    let mTTC = 1/frontValues
+                    
+                    let finalTTC = (Double(timeToColision) + mTTC)/2
+                    
+                    self.beacons[i].finalTTC = finalTTC
                     
                 if tempDistance <= 1.0 || timeToColision <= 3.0{
                     
@@ -396,6 +412,8 @@ class BeaconList: ObservableObject {
                     DispatchQueue.main.asyncAfter(deadline: .now() +  1.0) {
                         self.beacons[i].isLevelOn = false
                     }
+                    
+
                 }
 
                 if speed > 0.3{
@@ -486,7 +504,7 @@ struct BeaconListView: View {
                         .frame(width: UIScreen.main.bounds.size.width/6)
                         .foregroundColor(.black)
                         .multilineTextAlignment(.center)
-                    Text("Time To Collision")
+                    Text("Final Time To Collision")
                         .frame(width: UIScreen.main.bounds.size.width/6)
                         .foregroundColor(.black)
                         .multilineTextAlignment(.center)
@@ -522,8 +540,10 @@ struct BeaconListView: View {
                         .multilineTextAlignment(.center)
                         .foregroundColor(.black)
                     
-                    let timeToColision = beacon.distance / Float(beacon.speed)
-                    let strTimeToColision = String(format: "%.2f", timeToColision)
+//                    let timeToColision = beacon.distance / Float(beacon.speed)
+//                    let tempFinalTTC = timeToColision + beacon.mTTC
+                    
+                    let strTimeToColision = String(format: "%.2f", beacon.finalTTC)
                     Text(strTimeToColision)
                         .frame(width: UIScreen.main.bounds.size.width/6)
                         .multilineTextAlignment(.center)
