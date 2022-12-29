@@ -266,15 +266,14 @@ class BeaconList: ObservableObject {
             if self.beacons[i].publicID == publicID {
                 
                 // Showing Test Notification
-                
                 self.beacons[i].vector = vector
                 
                 // Creating an object of User Location then get his
-                //                let CLocation  = CLLocation(latitude: Double(vector?.x ?? 0.0), longitude: Double(vector?.y ?? 0.0))
-                //                self.beacons[i].speed = CLocation.speedAccuracy
+                // let CLocation  = CLLocation(latitude: Double(vector?.x ?? 0.0), longitude: Double(vector?.y ?? 0.0))
+                // self.beacons[i].speed = CLocation.speedAccuracy
                 self.beacons[i].date = Date().formattedString()
                 let diatance = self.beacons[i].distanceOverTime
-//                                print(diatance)
+                //print(diatance)
                 
                 //print(oldTime,Date())
                 let tempDate = Date()
@@ -282,15 +281,11 @@ class BeaconList: ObservableObject {
                 oldTime = tempDate
 
                 let dataHelper = DataHelper()
-               
-
                 
                 // print(elapsed)
                 let tempElapsed = Int(elapsed * 10)
                
                 if tempElapsed > 0{
-                    
-                
                 
                 let time = elapsed //self.beacons[i].date.timeInterval()
                 //0.673 - 0.655 / 0.5
@@ -301,51 +296,84 @@ class BeaconList: ObservableObject {
                 
                 let avgSpeed = (previousSpeed + Double(speed)) / 2
                 print("Avg. Speed",avgSpeed)
+                    
                 previousSpeed = Double(speed)
                     
                 if speed != 0{
                     //print(elapsed,diatance)
-                    self.beacons[i].speed = Double(speed) //Double(speed.avoidNotation) ?? 0.000
-                    
-                    
-                    
-                    
-                   // print(elapsed, Double(speed))
+                    self.beacons[i].speed = Double(speed)
+                    //Double(speed.avoidNotation) ?? 0.000
+                    //print(elapsed, Double(speed))
                 }
 
-                
-//                let timeToColision = self.beacons[i].distance/speed
+//              let timeToColision = self.beacons[i].distance/speed
                 let timeToColision = self.beacons[i].distance/Float(self.beacons[i].speed)
                 let tempDistance = self.beacons[i].distance
                     
-                if tempDistance <= 1.0 || (timeToColision <= 3.0 && timeToColision >= 0){
-//                    print("Notfication",timeToColision,tempDistance)
+                if tempDistance <= 1.0 || timeToColision <= 3.0{
                     
+                   
+                    
+                    //print("Notfication",timeToColision,tempDistance)
+
                     let tempDate = Date()
                     let elapsed = Date().timeIntervalSince(oldNotifiationTime)
-                  // print(tempDate, oldNotifiationTime)
-                   
+                    //print(tempDate, oldNotifiationTime)
+                    
                     let tempElapsed = Int(elapsed * 10)
                     oldNotifiationTime = tempDate
                     
                     if tempElapsed >= 10 {
-                       // print(tempElapsed)
+                        // print(tempElapsed)
                         NotificationService.shared.createNotifcation()
                     }
                     
-                    dataHelper.buildData(deviceId: "TimeToCollisionNotification")
-                    
-                    let strDistance = String(format:"%.2f", tempDistance)
-                    let strTimeToColision = String(format: "%.2f", timeToColision)
-
-                    let ttcPath = dataHelper.getTimeToCollisionPath()
-                    let distancePath = dataHelper.getDistancePath()
-                    
-                    let ttcData = DataInfo(path: ttcPath, dataString: "\(strTimeToColision)")
-                    let distanceData = DataInfo(path: distancePath, dataString: "\(strDistance)")
-                     
-                    FirebaseManager.shared.storeData(data: ttcData)
-                    FirebaseManager.shared.storeData(data: distanceData)
+                    if timeToColision >= 0 && timeToColision <= 1{
+                        dataHelper.buildDataForTTC(deviceId: "TimeToCollision Notification", level: "High Risk")
+                        
+                        let strDistance = String(format:"%.2f", tempDistance)
+                        let strTimeToColision = String(format: "%.2f",timeToColision)
+                        
+                        let ttcPath = dataHelper.getTimeToCollisionPath()
+                        let distancePath = dataHelper.getDistancePath()
+                        
+                        let ttcData = DataInfo(path: ttcPath, dataString: "\(strTimeToColision)")
+                        let distanceData = DataInfo(path: distancePath, dataString: "\(strDistance)")
+                        
+                        
+                        FirebaseManager.shared.storeData(data: ttcData)
+                        FirebaseManager.shared.storeData(data: distanceData)
+                    }else if timeToColision >= 1 && timeToColision <= 2{
+                        dataHelper.buildDataForTTC(deviceId: "TimeToCollision Notification", level: "Moderate Risk")
+                        
+                        let strDistance = String(format:"%.2f", tempDistance)
+                        let strTimeToColision = String(format: "%.2f",timeToColision)
+                        
+                        let ttcPath = dataHelper.getTimeToCollisionPath()
+                        let distancePath = dataHelper.getDistancePath()
+                        
+                        let ttcData = DataInfo(path: ttcPath, dataString: "\(strTimeToColision)")
+                        let distanceData = DataInfo(path: distancePath, dataString: "\(strDistance)")
+                        
+                        
+                        FirebaseManager.shared.storeData(data: ttcData)
+                        FirebaseManager.shared.storeData(data: distanceData)
+                    }else if timeToColision >= 2 && timeToColision <= 3{
+                        dataHelper.buildDataForTTC(deviceId: "TimeToCollision Notification", level: "Low Risk")
+                        
+                        let strDistance = String(format:"%.2f", tempDistance)
+                        let strTimeToColision = String(format: "%.2f",timeToColision)
+                        
+                        let ttcPath = dataHelper.getTimeToCollisionPath()
+                        let distancePath = dataHelper.getDistancePath()
+                        
+                        let ttcData = DataInfo(path: ttcPath, dataString: "\(strTimeToColision)")
+                        let distanceData = DataInfo(path: distancePath, dataString: "\(strDistance)")
+                        
+                        
+                        FirebaseManager.shared.storeData(data: ttcData)
+                        FirebaseManager.shared.storeData(data: distanceData)
+                    }
                 }
 
                 if speed > 0.3{
