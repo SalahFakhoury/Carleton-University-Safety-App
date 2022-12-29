@@ -299,8 +299,8 @@ class BeaconList: ObservableObject {
                 //debugPrint("Beacon Speed \(speed.avoidNotation)")
                 
                 let avgSpeed = (previousSpeed + Double(speed)) / 2
-                //print("Avg. Speed",avgSpeed)
-                    
+                print("Avg. Speed",avgSpeed)
+//                    print("Speed",speed)
                     let diffSpeed = Double(speed) - previousSpeed
                     let accelaration = diffSpeed / Double(time)
                     
@@ -310,11 +310,11 @@ class BeaconList: ObservableObject {
                     
                 previousSpeed = Double(speed)
                     
-              
+                self.beacons[i].speed = Double(avgSpeed)
                     
                 if speed != 0{
                     //print(elapsed,diatance)
-                    self.beacons[i].speed = Double(speed)
+//                    self.beacons[i].speed = Double(speed)
                     //Double(speed.avoidNotation) ?? 0.000
                     //print(elapsed, Double(speed))
                 }
@@ -326,7 +326,9 @@ class BeaconList: ObservableObject {
                     
                     let innerValues = self.beacons[i].speed * 2 + 2 * self.beacons[i].accelaration * Double(self.beacons[i].distance)
                     
-                    let sqrtValues = sqrt(innerValues)
+                    let positiveInnerValues = fabs(innerValues)
+                    
+                    let sqrtValues = sqrt(positiveInnerValues)
                     
                     let tempValues = -self.beacons[i].speed + sqrtValues
                     
