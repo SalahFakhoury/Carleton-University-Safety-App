@@ -16,6 +16,8 @@ struct BeaconItem: Identifiable {
     var speed : Double = 0.0
     var date:String = Date().formattedString()
     var distanceOverTime : Float = 0
+    var accelaration : Double = 0.0
+    var level : String = ""
     
 }
 
@@ -106,11 +108,11 @@ class BeaconList: ObservableObject {
                 secondBeaconName = String(value.prefix(2))
                // print(secondBeaconName, self.beacons[i].speed)
             }else if i == 2{
-               thirdBeaconDistance = self.beacons[i].distance
+                thirdBeaconDistance = self.beacons[i].distance
                 let value = self.beacons[i].publicID
                 thirdBeaconName = String(value.prefix(2))
             }else if i == 3{
-               fourthBeaconDistance = self.beacons[i].distance
+                fourthBeaconDistance = self.beacons[i].distance
                 let value = self.beacons[i].publicID
                 fourthBeaconName = String(value.prefix(2))
             }else if i == 4{
@@ -295,9 +297,18 @@ class BeaconList: ObservableObject {
                 //debugPrint("Beacon Speed \(speed.avoidNotation)")
                 
                 let avgSpeed = (previousSpeed + Double(speed)) / 2
-                print("Avg. Speed",avgSpeed)
+                //print("Avg. Speed",avgSpeed)
+                    
+                    let diffSpeed = Double(speed) - previousSpeed
+                    let accelaration = diffSpeed / Double(time)
+                    
+                    self.beacons[i].accelaration = accelaration
+                    
+                    print(accelaration)
                     
                 previousSpeed = Double(speed)
+                    
+              
                     
                 if speed != 0{
                     //print(elapsed,diatance)
@@ -329,6 +340,7 @@ class BeaconList: ObservableObject {
                     }
                     
                     if timeToColision >= 0 && timeToColision <= 1{
+                        self.beacons[i].level = "High"
                         dataHelper.buildDataForTTC(deviceId: "TimeToCollision Notification", level: "High Risk")
                         
                         let strDistance = String(format:"%.2f", tempDistance)
@@ -344,6 +356,7 @@ class BeaconList: ObservableObject {
                         FirebaseManager.shared.storeData(data: ttcData)
                         FirebaseManager.shared.storeData(data: distanceData)
                     }else if timeToColision >= 1 && timeToColision <= 2{
+                        self.beacons[i].level = "Moderate"
                         dataHelper.buildDataForTTC(deviceId: "TimeToCollision Notification", level: "Moderate Risk")
                         
                         let strDistance = String(format:"%.2f", tempDistance)
@@ -359,6 +372,7 @@ class BeaconList: ObservableObject {
                         FirebaseManager.shared.storeData(data: ttcData)
                         FirebaseManager.shared.storeData(data: distanceData)
                     }else if timeToColision >= 2 && timeToColision <= 3{
+                        self.beacons[i].level = "Low"
                         dataHelper.buildDataForTTC(deviceId: "TimeToCollision Notification", level: "Low Risk")
                         
                         let strDistance = String(format:"%.2f", tempDistance)
@@ -460,11 +474,11 @@ struct BeaconListView: View {
                         .frame(width: UIScreen.main.bounds.size.width/6)
                         .foregroundColor(.black)
                         .multilineTextAlignment(.center)
-                    Text("Speed")
+                    Text("Speed / Accelaration")
                         .frame(width: UIScreen.main.bounds.size.width/6)
                         .foregroundColor(.black)
                         .multilineTextAlignment(.center)
-                    Text("Time To Collsion")
+                    Text("Time To Collision")
                         .frame(width: UIScreen.main.bounds.size.width/6)
                         .foregroundColor(.black)
                         .multilineTextAlignment(.center)
@@ -494,7 +508,7 @@ struct BeaconListView: View {
                         .multilineTextAlignment(.center)
                         .foregroundColor(.black)
                     
-                    let beaconSpeed = String(format: "%.2f", beacon.speed)
+                    let beaconSpeed = String(format: "%.2f / %.2f", beacon.speed, beacon.accelaration)
                     Text(beaconSpeed)
                         .frame(width: UIScreen.main.bounds.size.width/6)
                         .multilineTextAlignment(.center)
@@ -517,6 +531,7 @@ struct BeaconListView: View {
                         .foregroundColor(.black)
                         .padding(.trailing)
                 }
+                .back
                 
             }
             .background(.white)
