@@ -21,4 +21,16 @@ class FirebaseManager {
 //        print("Value: \(data.dataString)")
         
     }
+    func getBeaconData(id:String) {
+        dbRef.child(id)
+            .child(DataHelper().getCurrentDateString())
+            .queryOrdered(byChild: "Distance")
+            .observeSingleEvent(of: .value) { snapshot in
+                if let dic = snapshot.value as? [String:Any] {
+//                    for (_, ele) in dic.enumerated() {
+//                        if ele ==
+//                    }
+                }
+        }
+    }
 }

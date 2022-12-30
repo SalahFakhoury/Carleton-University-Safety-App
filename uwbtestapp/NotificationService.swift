@@ -2,7 +2,7 @@
 //  NotificationService.swift
 //  uwbtestapp
 //
-//  Created by Mohanad Fakhoury on 2022-11-13.
+//  Created by  String(format:"%.2f", tempDistance) on 2022-11-13.
 //
 
 import Foundation

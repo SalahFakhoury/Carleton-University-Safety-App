@@ -84,6 +84,9 @@ struct ContentView: View {
             }.padding([.leading, .trailing], 40.0)
         }
         .background(.white)
+        .onAppear {
+            FirebaseManager.shared.getBeaconData(id: "1ea6a7e2141bb5de129ba4e6ad04a001")
+        }
     }
 }
 

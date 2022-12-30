@@ -50,6 +50,17 @@ class DataHelper {
         self.path = "\(deviceId)/\(currentDateString)/\(curTimeString)"
     }
     
+    func getCurrentDateString()->String {
+        self.dateFormatter.dateFormat = self.dateFString
+        let date = Date()
+        return self.dateFormatter.string(from: date)
+        
+//        self.dateFormatter.dateFormat = self.timeFString
+//        let curTimeString = self.dateFormatter.string(from: date)
+//
+//        self.path = "\(deviceId)/\(currentDateString)/\(curTimeString)"
+    }
+    
     func buildDataForTTC(deviceId: String, level:String) {
         self.dateFormatter.dateFormat = self.dateFString
         let date = Date()
