@@ -20,6 +20,8 @@ struct BeaconItem: Identifiable {
     var levelColor : Color = .white
     var isLevelOn = false
     var finalTTC : Double = 0.0
+    var mTTC : Double = 0.0
+    var finalTTCType : String = ""
     
 }
 
@@ -290,7 +292,7 @@ class BeaconList: ObservableObject {
                 let dataHelper = DataHelper()
                 
                 // print(elapsed)
-                let tempElapsed = Int(elapsed * 10)
+                let tempElapsed = Int(elapsed * 10) // this is just to check if the value is greater than 0
                
                 if tempElapsed > 0{
                     
@@ -306,10 +308,7 @@ class BeaconList: ObservableObject {
 //                    print("Avg. Speed",avgSpeed, speed, previousSpeed, diatance)
 //                                        print("Speed",speed)
                     let diffSpeed = Double(speed) - previousSpeed
-                    let accelaration = diffSpeed / Double(time)
-                    let strAcc = String(format:"%.2f", accelaration)
-                    let info = DataInfo(path: "accelaration", dataString: strAcc)
-                     FirebaseManager.shared.storeData(data: info)
+                    let accelaration = avgSpeed / Double(time) // Diff in avg speed divide diff in time
                     
                     self.beacons[i].accelaration = accelaration
                     
@@ -336,9 +335,11 @@ class BeaconList: ObservableObject {
                     if innerValues < 0 {
                         let finalTTC = Double(timeToColision)
                         self.beacons[i].finalTTC = finalTTC
-                        let strAcc = String(format:"%.2f", finalTTC)
-                        let info = DataInfo(path: "MixTTC", dataString: strAcc)
-                         FirebaseManager.shared.storeData(data: info)
+                        self.beacons[i].finalTTCType = "MixTTC"
+                        self.beacons[i].mTTC = 0.0
+//                        let strAcc = String(format:"%.2f", finalTTC)
+//                        let info = DataInfo(path: "MixTTC", dataString: strAcc)
+//                         FirebaseManager.shared.storeData(data: info)
                     }else{
                         
                         let sqrtValues = sqrt(innerValues)
@@ -358,46 +359,59 @@ class BeaconList: ObservableObject {
                         if sqrtValues.isNaN {
                             let finalTTC = Double(timeToColision)
                             self.beacons[i].finalTTC = finalTTC
-                            let strAcc = String(format:"%.2f", finalTTC)
-                            let info = DataInfo(path: "MixTTC", dataString: strAcc)
-                             FirebaseManager.shared.storeData(data: info)
+                            self.beacons[i].finalTTCType = "MixTTC"
+                            self.beacons[i].mTTC = 0.0
+//                            let strAcc = String(format:"%.2f", finalTTC)
+//                            let info = DataInfo(path: "MixTTC", dataString: strAcc)
+//                             FirebaseManager.shared.storeData(data: info)
                         }
                         else if (frontValuet1 > 0.0) && (frontValuet2 > 0.0){
                             if frontValuet1 >= frontValuet2 {
+                                
                                 let finalTTC = (Double(timeToColision) + frontValuet2)/2
                                 self.beacons[i].finalTTC = finalTTC
-                                let strAcc = String(format:"%.2f", finalTTC)
-                                let info = DataInfo(path: "MixTTC-(t1>0,t2>0)", dataString: strAcc)
-                                 FirebaseManager.shared.storeData(data: info)
+                                self.beacons[i].finalTTCType = "MixTTC - (t1>0,t2>0)"
+                                self.beacons[i].mTTC = frontValuet2
+//                                let strAcc = String(format:"%.2f", finalTTC)
+//                                let info = DataInfo(path: "MixTTC-(t1>0,t2>0)", dataString: strAcc)
+//                                 FirebaseManager.shared.storeData(data: info)
                             }else {
                                 let finalTTC = (Double(timeToColision) + frontValuet1)/2
                                 self.beacons[i].finalTTC = finalTTC
+                                self.beacons[i].finalTTCType = "MixTTC - Other Case"
+                                self.beacons[i].mTTC = frontValuet1
                             }
                         }else if (frontValuet1 > 0.0) && (frontValuet2 <= 0.0) {
                             let finalTTC = (Double(timeToColision) + frontValuet1)/2
                             self.beacons[i].finalTTC = finalTTC
-                            let strAcc = String(format:"%.2f", finalTTC)
-                            let info = DataInfo(path: "MixTTC-(t1>0,t2<=0)", dataString: strAcc)
-                             FirebaseManager.shared.storeData(data: info)
+                            self.beacons[i].finalTTCType = "MixTTC - (t1>0,t2<=0)"
+                            self.beacons[i].mTTC = frontValuet1
+//                            let strAcc = String(format:"%.2f", finalTTC)
+//                            let info = DataInfo(path: "MixTTC-(t1>0,t2<=0)", dataString: strAcc)
+//                             FirebaseManager.shared.storeData(data: info)
                         }
                         else if (frontValuet1 <= 0.0) && (frontValuet2 > 0.0) {
                             let finalTTC = (Double(timeToColision) + frontValuet2)/2
                             self.beacons[i].finalTTC = finalTTC
-                            let strAcc = String(format:"%.2f", finalTTC)
-                            let info = DataInfo(path: "MixTTC-(t1<=0,t2>0)", dataString: strAcc)
-                             FirebaseManager.shared.storeData(data: info)
+                            self.beacons[i].finalTTCType = "MixTTC - (t1<=0,t2>0)"
+                            self.beacons[i].mTTC = frontValuet2
+//                            let strAcc = String(format:"%.2f", finalTTC)
+//                            let info = DataInfo(path: "MixTTC-(t1<=0,t2>0)", dataString: strAcc)
+//                             FirebaseManager.shared.storeData(data: info)
                         }else{
                             let finalTTC = Double(timeToColision)
                             self.beacons[i].finalTTC = finalTTC
+                            self.beacons[i].finalTTCType = "MixTTC - (Diff.acc<= 0)"
+                            self.beacons[i].mTTC = 0.0
                         }
-                        print(timeToColision, frontValuet1, frontValuet2, self.beacons[i].finalTTC)
+//                        print(timeToColision, frontValuet1, frontValuet2, self.beacons[i].finalTTC)
                     
                         
                     }
                     
-                if tempDistance <= 1.0 || timeToColision <= 3.0{
+                    if tempDistance <= 1.0 || (self.beacons[i].finalTTC <= 3.0 && self.beacons[i].finalTTC >= 0){
                     //print("Notfication", timeToColision, mTTC, finalTTC)
-                   
+//                   print(tempDistance, timeToColision)
                     
                     //print("Notfication",timeToColision,tempDistance)
 
@@ -409,21 +423,22 @@ class BeaconList: ObservableObject {
                     oldNotifiationTime = tempDate
                     
                     if tempElapsed >= 10 {
-                        // print(tempElapsed)
+                        print(tempElapsed, tempDistance, self.beacons[i].finalTTC)
                         NotificationService.shared.createNotifcation()
                     }
+                    
                     let redRange = 0.0...1.0
                     let yellowRange = 1.1...2.0
                     let greenRange = 2.1...3.0
                     
                     
-                    if redRange.contains(self.beacons[i].finalTTC){
+                    if self.beacons[i].finalTTC >= 0 && self.beacons[i].finalTTC <= 1{
                         self.beacons[i].levelColor = .red
                         self.beacons[i].isLevelOn = true
                         dataHelper.buildDataForTTC(deviceId: "TimeToCollision Notification", level: "High Risk")
                         
                         let strDistance = String(format:"%.2f", tempDistance)
-                        let strTimeToColision = String(format: "%.2f",timeToColision)
+                        let strTimeToColision = String(format: "%.2f",self.beacons[i].finalTTC)
                         
                         let ttcPath = dataHelper.getTimeToCollisionPath()
                         let distancePath = dataHelper.getDistancePath()
@@ -434,13 +449,13 @@ class BeaconList: ObservableObject {
                         
                         FirebaseManager.shared.storeData(data: ttcData)
                         FirebaseManager.shared.storeData(data: distanceData)
-                    }else if yellowRange.contains(self.beacons[i].finalTTC){
+                    }else if self.beacons[i].finalTTC >= 1.1 && self.beacons[i].finalTTC <= 2{
                         self.beacons[i].levelColor = .yellow
                         self.beacons[i].isLevelOn = true
                         dataHelper.buildDataForTTC(deviceId: "TimeToCollision Notification", level: "Moderate Risk")
                         
                         let strDistance = String(format:"%.2f", tempDistance)
-                        let strTimeToColision = String(format: "%.2f",timeToColision)
+                        let strTimeToColision = String(format: "%.2f",self.beacons[i].finalTTC)
                         
                         let ttcPath = dataHelper.getTimeToCollisionPath()
                         let distancePath = dataHelper.getDistancePath()
@@ -451,13 +466,13 @@ class BeaconList: ObservableObject {
                         
                         FirebaseManager.shared.storeData(data: ttcData)
                         FirebaseManager.shared.storeData(data: distanceData)
-                    }else if greenRange.contains(self.beacons[i].finalTTC){
+                    }else if self.beacons[i].finalTTC >= 2.1 && self.beacons[i].finalTTC <= 3{
                         self.beacons[i].levelColor = .green
                         self.beacons[i].isLevelOn = true
                         dataHelper.buildDataForTTC(deviceId: "TimeToCollision Notification", level: "Low Risk")
                         
                         let strDistance = String(format:"%.2f", tempDistance)
-                        let strTimeToColision = String(format: "%.2f",timeToColision)
+                        let strTimeToColision = String(format: "%.2f",self.beacons[i].finalTTC)
                         
                         let ttcPath = dataHelper.getTimeToCollisionPath()
                         let distancePath = dataHelper.getDistancePath()
@@ -489,6 +504,9 @@ class BeaconList: ObservableObject {
                 let coordinatePath = dataHelper.getBeaconLocationPath()
                 let ttcPath = dataHelper.getTimeToCollisionPath()
                 let distancePath = dataHelper.getDistancePath()
+                let accPath = dataHelper.getAccelarationPath()
+                let finalTTCPath = dataHelper.getFinalTTCPath(type: self.beacons[i].finalTTCType)
+                let mttcPath = dataHelper.getmTTCPath()
                 
                 let x = HelperUtility.getNumber(requiredDigit: 3, number: Float(value.x ))
                 let y = HelperUtility.getNumber(requiredDigit: 3, number: Float(value.y ))
@@ -502,18 +520,25 @@ class BeaconList: ObservableObject {
                 let timeToColision = self.beacons[i].distance / Float(self.beacons[i].speed)
                 let strTimeToColision = String(format: "%.2f", timeToColision)
                 let strDistance = String(format:"%.2f", self.beacons[i].distance)
+                let strAcc = String(format:"%.2f", self.beacons[i].accelaration)
+                let strFinalTTC = String(format:"%.2f", self.beacons[i].finalTTC)
+                let strmTTC = String(format:"%.2f", self.beacons[i].mTTC)
                 
                 let speedData = DataInfo(path: speedPath, dataString: "\(beaconSpeed)")
                 let beaconLocationData = DataInfo(path: coordinatePath, dataString: locString)
                 let ttcData = DataInfo(path: ttcPath, dataString: "\(strTimeToColision)")
                 let distanceData = DataInfo(path: distancePath, dataString: "\(strDistance)")
+                let accData = DataInfo(path: accPath, dataString: "\(strAcc)")
+                let finalTTCData = DataInfo(path: finalTTCPath, dataString: "\(strFinalTTC)")
+                let mTTCData = DataInfo(path: mttcPath, dataString: "\(strmTTC)")
                 
                 FirebaseManager.shared.storeData(data: speedData)
                 FirebaseManager.shared.storeData(data: beaconLocationData)
                 FirebaseManager.shared.storeData(data: ttcData)
                 FirebaseManager.shared.storeData(data: distanceData)
-                
-                
+                FirebaseManager.shared.storeData(data: accData)
+                FirebaseManager.shared.storeData(data: finalTTCData)
+                FirebaseManager.shared.storeData(data: mTTCData)
                 
                 
                 

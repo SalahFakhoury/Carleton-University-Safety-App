@@ -17,8 +17,9 @@ class DataHelper {
     private let speedKey = "Speed"
     private let beaconLocKey = "Coordinate"
     private let ttcKey = "Time to Collision"
-    
-    
+    private let accKey = "Accelaration"
+    private let mttcKey = "MTTC"
+    private let lastDate = Date()
     
     
     private var path: String = "Salah/Path"
@@ -44,9 +45,14 @@ class DataHelper {
         let date = Date()
         let currentDateString = self.dateFormatter.string(from: date)
         
+//        let diff = Calendar.current.dateComponents([.second], from: date, to: lastDate)
+//        let miliseconds = (diff.second ?? 0) * 1000
+//        if miliseconds > 50{
+//
+//        }
+        
         self.dateFormatter.dateFormat = self.timeFString
         let curTimeString = self.dateFormatter.string(from: date)
-        
         self.path = "\(deviceId)/\(currentDateString)/\(curTimeString)"
     }
     
@@ -76,10 +82,23 @@ class DataHelper {
         return "\(path)/\(distanceKey)"
     }
     
+    func getAccelarationPath() -> String {
+        return "\(path)/\(accKey)"
+    }
     
-    func getSpeedPath() -> String{
+    func    getSpeedPath() -> String{
         return "\(path)/\(speedKey)"
     }
+    
+    
+    func getmTTCPath() -> String{
+        return "\(path)/\(mttcKey)"
+    }
+    
+    func getFinalTTCPath(type:String) -> String{
+        return "\(path)/\(type)"
+    }
+    
     
     
     func getBeaconLocationPath() -> String {
