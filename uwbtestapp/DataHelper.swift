@@ -14,10 +14,12 @@ class DataHelper {
     private let distanceKey = "Distance"
     private let rssiKey = "rssi"
     
-    private let speedKey = "Speed"
+    private let speedKey = "Avg. Speed"
+    private let prevSpeedKey = "Previous Speed"
+    private let spotSpeedKey = "Spot Speed"
     private let beaconLocKey = "Coordinate"
     private let ttcKey = "Time to Collision"
-    private let accKey = "Accelaration"
+    private let accKey = "Acceleration"
     private let mttcKey = "MTTC"
     private let lastDate = Date()
     
@@ -86,10 +88,13 @@ class DataHelper {
         return "\(path)/\(accKey)"
     }
     
-    func    getSpeedPath() -> String{
+    func getSpeedPath() -> String{
         return "\(path)/\(speedKey)"
     }
     
+    func getPrevSpeedPath() -> String{
+        return "\(path)/\(prevSpeedKey)"
+    }
     
     func getmTTCPath() -> String{
         return "\(path)/\(mttcKey)"
@@ -99,7 +104,9 @@ class DataHelper {
         return "\(path)/\(type)"
     }
     
-    
+    func getSpotSpeedPath() -> String{
+        return "\(path)/\(spotSpeedKey)"
+    }
     
     func getBeaconLocationPath() -> String {
         return "\(path)/\(beaconLocKey)"
