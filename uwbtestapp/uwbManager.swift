@@ -10,6 +10,7 @@ class UWBManager {
     private var uwbManager: EstimoteUWBManager?
     private var beaconUpdateCallback: (UWBDevice)->Void
     private var beaconDisconnectCallBack: (String) -> Void
+    private var previousTime: Date = Date()
     
     init(beaconUpdateCallback: @escaping ((UWBDevice)->Void), beaconDisconnectCallBack: @escaping (String) -> Void) {
         self.beaconUpdateCallback = beaconUpdateCallback
@@ -22,12 +23,24 @@ class UWBManager {
     private func setupUWB() {
         uwbManager = EstimoteUWBManager(positioningObserver: self, discoveryObserver: self, beaconRangingObserver: self)
         uwbManager?.startScanning()
+        
+        previousTime = Date()
     }
 }
 
 // REQUIRED PROTOCOL
 extension UWBManager: UWBPositioningObserver {
     func didUpdatePosition(for device: UWBDevice) {
+        let currentTime = Date()
+        
+        if (currentTime.timeIntervalSince(previousTime) * 1000) < 100.0 { // arafat: due to skip less than 100 ms data
+            print("Skip this time because of less than 100ms")
+            previousTime = currentTime
+            return
+        }
+        
+        previousTime = currentTime
+        
         self.beaconUpdateCallback(device)
         ///devi.ce
         let dataHelper = DataHelper()

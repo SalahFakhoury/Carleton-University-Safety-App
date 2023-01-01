@@ -22,7 +22,10 @@ struct BeaconItem: Identifiable {
     var finalTTC : Double = 0.0
     var mTTC : Double = 0.0
     var finalTTCType : String = ""
-    
+    var timeToColision : Double = 0.0
+    var spotspeed : Double = 0.0
+    var previousSpeed : Double = 0.0
+    var PreviosSpeedwithoutupdate : Double = 0.0
 }
 
 class BeaconList: ObservableObject {
@@ -43,6 +46,7 @@ class BeaconList: ObservableObject {
     var oldTime = Date()
     var oldNotifiationTime = Date()
     var previousSpeed : Double = 0.0
+    var prevAvgSpeed: Double = 0.0
     
     
     init(items: [BeaconItem]) {
@@ -300,43 +304,54 @@ class BeaconList: ObservableObject {
                     //0.673 - 0.655 / 0.5
                     
                     let speed = diatance/Float(time)
+                    
+                    self.beacons[i].spotspeed = Double(speed)
                     // debugPrint("Beacon vector \(vector?.x)" )
                     //debugPrint("Beacon Speed \(speed.avoidNotation)")
                     
                     let avgSpeed = (previousSpeed + Double(speed)) / 2
 //                    print("Avg. Speed")
-//                    print("Avg. Speed",avgSpeed, speed, previousSpeed, diatance)
+                    
 //                                        print("Speed",speed)
+                    
                     let diffSpeed = Double(speed) - previousSpeed
-                    let accelaration = avgSpeed / Double(time) // Diff in avg speed divide diff in time
                     
-                    self.beacons[i].accelaration = accelaration
+                    let acceleration = (avgSpeed - prevAvgSpeed) / Double(time) // arafat: diff in avg speed
                     
-                    //print(accelaration)
+//                    let accelaration = diffSpeed / Double(time) // Diff in avg speed divide diff in time
                     
+                    self.beacons[i].accelaration = acceleration
+                    
+//                   print(accelaration, speed, diffSpeed)
+                    
+                    // arafat: storing new avg to previous for next
+                    prevAvgSpeed = avgSpeed
+                    self.beacons[i].PreviosSpeedwithoutupdate = previousSpeed
                     previousSpeed = Double(speed)
                     
+                    self.beacons[i].previousSpeed = Double(previousSpeed)
                     self.beacons[i].speed = Double(avgSpeed)
                     
-                    if speed != 0{
+//                    if speed != 0{
                         //                    print(elapsed,diatance)
                         //                    self.beacons[i].speed = Double(speed)
                         //Double(speed.avoidNotation) ?? 0.000
                         //print(elapsed, Double(speed))
-                    }
+//                    }
                     
                     //              let timeToColision = self.beacons[i].distance/speed
                     let timeToColision = self.beacons[i].distance/Float(self.beacons[i].speed)
                     let tempDistance = self.beacons[i].distance
+                    self.beacons[i].timeToColision = Double(timeToColision)
                     
                     
-                    let innerValues = self.beacons[i].speed * 2 + 2 * self.beacons[i].accelaration * Double(self.beacons[i].distance)
+                    let innerValues = pow(self.beacons[i].speed, 2) + 2 * self.beacons[i].accelaration * Double(self.beacons[i].distance)
                     
-                    if innerValues < 0 {
+                    if innerValues < 0 || avgSpeed < 0 {
                         let finalTTC = Double(timeToColision)
                         self.beacons[i].finalTTC = finalTTC
-                        self.beacons[i].finalTTCType = "MixTTC"
-                        self.beacons[i].mTTC = 0.0
+                        self.beacons[i].finalTTCType = "TTC"
+                        self.beacons[i].mTTC = Double(timeToColision)
 //                        let strAcc = String(format:"%.2f", finalTTC)
 //                        let info = DataInfo(path: "MixTTC", dataString: strAcc)
 //                         FirebaseManager.shared.storeData(data: info)
@@ -355,22 +370,23 @@ class BeaconList: ObservableObject {
                         
                         
 //                        let finalTTC = sqrtValues.isNaN ? Double(timeToColision) : (Double(timeToColision) + TTC_acc)/2
-                        
-                        if sqrtValues.isNaN {
-                            let finalTTC = Double(timeToColision)
-                            self.beacons[i].finalTTC = finalTTC
-                            self.beacons[i].finalTTCType = "MixTTC"
-                            self.beacons[i].mTTC = 0.0
-//                            let strAcc = String(format:"%.2f", finalTTC)
-//                            let info = DataInfo(path: "MixTTC", dataString: strAcc)
-//                             FirebaseManager.shared.storeData(data: info)
-                        }
-                        else if (frontValuet1 > 0.0) && (frontValuet2 > 0.0){
+//
+//                        if sqrtValues.isNaN {
+//                            let finalTTC = Double(timeToColision)
+//                            self.beacons[i].finalTTC = finalTTC
+//                            self.beacons[i].finalTTCType = "TTC"
+//                            self.beacons[i].mTTC = Double(timeToColision)
+////                            let strAcc = String(format:"%.2f", finalTTC)
+////                            let info = DataInfo(path: "MixTTC", dataString: strAcc)
+////                             FirebaseManager.shared.storeData(data: info)
+//                        }
+//                        else
+                        if (frontValuet1 > 0.0) && (frontValuet2 > 0.0){
                             if frontValuet1 >= frontValuet2 {
                                 
                                 let finalTTC = (Double(timeToColision) + frontValuet2)/2
                                 self.beacons[i].finalTTC = finalTTC
-                                self.beacons[i].finalTTCType = "MixTTC - (t1>0,t2>0)"
+                                self.beacons[i].finalTTCType = "MixTTC - (t1>t2)"
                                 self.beacons[i].mTTC = frontValuet2
 //                                let strAcc = String(format:"%.2f", finalTTC)
 //                                let info = DataInfo(path: "MixTTC-(t1>0,t2>0)", dataString: strAcc)
@@ -378,7 +394,7 @@ class BeaconList: ObservableObject {
                             }else {
                                 let finalTTC = (Double(timeToColision) + frontValuet1)/2
                                 self.beacons[i].finalTTC = finalTTC
-                                self.beacons[i].finalTTCType = "MixTTC - Other Case"
+                                self.beacons[i].finalTTCType = "MixTTC - (t2>t1)"
                                 self.beacons[i].mTTC = frontValuet1
                             }
                         }else if (frontValuet1 > 0.0) && (frontValuet2 <= 0.0) {
@@ -401,8 +417,8 @@ class BeaconList: ObservableObject {
                         }else{
                             let finalTTC = Double(timeToColision)
                             self.beacons[i].finalTTC = finalTTC
-                            self.beacons[i].finalTTCType = "MixTTC - (Diff.acc<= 0)"
-                            self.beacons[i].mTTC = 0.0
+                            self.beacons[i].finalTTCType = "TTC - (t1&t2<0) "
+                            self.beacons[i].mTTC = Double(timeToColision)
                         }
 //                        print(timeToColision, frontValuet1, frontValuet2, self.beacons[i].finalTTC)
                     
@@ -423,10 +439,13 @@ class BeaconList: ObservableObject {
                     oldNotifiationTime = tempDate
                     
                     if tempElapsed >= 10 {
-                        print(tempElapsed, tempDistance, self.beacons[i].finalTTC)
+//                        print(tempElapsed, tempDistance, self.beacons[i].finalTTC)
                         NotificationService.shared.createNotifcation()
                     }
-                    
+                        print("Avg. Speed", String(format: "%.2f", self.beacons[i].speed),"Spot speed", String(format: "%.2f", self.beacons[i].spotspeed), "Previous speed", String(format: "%.2f", self.beacons[i].PreviosSpeedwithoutupdate), "distance", String(format: "%.2f", self.beacons[i].distance), "acceleration", String(format: "%.2f", self.beacons[i].accelaration), "finalTTC", String(format: "%.2f", self.beacons[i].finalTTC), "timeToColision", String(format: "%.2f", self.beacons[i].timeToColision), "MTTC", String(format: "%.2f", self.beacons[i].mTTC))
+                        
+                        
+//                        "%.2f", String(format: "%.2f", "%.2f", "%.2f", "%.2f", "%.2f", "%.2f", "%.2f", "%.2f",
                     let redRange = 0.0...1.0
                     let yellowRange = 1.1...2.0
                     let greenRange = 2.1...3.0
@@ -498,6 +517,7 @@ class BeaconList: ObservableObject {
                 
             }
                 
+                      
                 dataHelper.buildData(deviceId: self.beacons[i].publicID)
                 
                 let speedPath = dataHelper.getSpeedPath()
@@ -530,6 +550,9 @@ class BeaconList: ObservableObject {
                 let distanceData = DataInfo(path: distancePath, dataString: "\(strDistance)")
                 let accData = DataInfo(path: accPath, dataString: "\(strAcc)")
                 let finalTTCData = DataInfo(path: finalTTCPath, dataString: "\(strFinalTTC)")
+                
+//                print("final TTC path: \(finalTTCPath)")
+                
                 let mTTCData = DataInfo(path: mttcPath, dataString: "\(strmTTC)")
                 
                 FirebaseManager.shared.storeData(data: speedData)
@@ -582,15 +605,15 @@ struct BeaconListView: View {
                         .foregroundColor(.black)
                         .multilineTextAlignment(.center)
                         .padding(.leading)
-                    Text("Distance")
+                    Text("Distance (m)")
                         .frame(width: UIScreen.main.bounds.size.width/6)
                         .foregroundColor(.black)
                         .multilineTextAlignment(.center)
-                    Text("Speed / Accelaration")
+                    Text("Speed (m/s) Acc (m/s^2)")
                         .frame(width: UIScreen.main.bounds.size.width/6)
                         .foregroundColor(.black)
                         .multilineTextAlignment(.center)
-                    Text("Final Time To Collision")
+                    Text("Mixed Time To Collision (S)")
                         .frame(width: UIScreen.main.bounds.size.width/6)
                         .foregroundColor(.black)
                         .multilineTextAlignment(.center)
