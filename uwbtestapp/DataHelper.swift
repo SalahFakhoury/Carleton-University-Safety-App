@@ -10,7 +10,8 @@ import Foundation
 class DataHelper {
     private let dateFormatter = DateFormatter()
     private let dateFString = "yyyy-MM-dd"
-    private let timeFString = "yyyy-MM-dd_HH:mm:ss-SSS"
+//    private let timeFString = "yyyy-MM-dd_HH:mm:ss-SSS"
+    private let timeFString = "HH:mm:ss-SSS"
     private let distanceKey = "Distance"
     private let rssiKey = "rssi"
     
@@ -80,11 +81,11 @@ class DataHelper {
         self.path = "\(deviceId)/\(level)/\(currentDateString)/\(curTimeString)"
     }
     
-    func getDistancePath() -> String {
+    func getDistancePath() -> String{
         return "\(path)/\(distanceKey)"
     }
     
-    func getAccelarationPath() -> String {
+    func getAccelarationPath() -> String{
         return "\(path)/\(accKey)"
     }
     
@@ -108,7 +109,7 @@ class DataHelper {
         return "\(path)/\(spotSpeedKey)"
     }
     
-    func getBeaconLocationPath() -> String {
+    func getBeaconLocationPath() -> String{
         return "\(path)/\(beaconLocKey)"
     }
     
@@ -116,7 +117,7 @@ class DataHelper {
         return "\(path)/\(ttcKey)"
     }
     
-    func getRSSIPath() -> String {
+    func getRSSIPath() -> String{
         return "\(path)/\(rssiKey)"
     }
 }

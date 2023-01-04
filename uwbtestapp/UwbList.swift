@@ -6,6 +6,7 @@
 
 import SwiftUI
 import EstimoteUWB
+import AVFoundation
 
 struct BeaconItem: Identifiable {
     let id = UUID()
@@ -205,11 +206,9 @@ class BeaconList: ObservableObject {
             let dB = secondDistance
             let dC = thirdDistance
             
-            
             let w1 = (dA*dA) - (dB*dB)
             let w2 = (beacon50.x*beacon50.x) - (beacon50.y*beacon50.y)
             let w3 = (beacon11.x*beacon11.x) + (beacon11.y*beacon11.y)
-            
             
             let W =  CGFloat(w1) - w2 + w3//(dA*dA) - (dB*dB) - (a.x*a.x) - (a.y*a.y) + (b.x*b.x) + (b.y*b.y)
             
@@ -217,17 +216,13 @@ class BeaconList: ObservableObject {
             let z2 =  beacon11.x*beacon11.x - beacon11.y*beacon11.y
             let z3 = beacon10.x*beacon10.x + beacon10.y*beacon10.y
             
-            
-            
-            
             let Z = CGFloat(z1) - z2 + z3 //dB*dB - dC*dC - b.x*b.x - b.y*b.y + c.x*c.x + c.y*c.y;
 
-            let x = (W*(beacon10.y-beacon11.y) - Z*(beacon11.y-beacon50.y)) / (2 * ((beacon11.x-beacon50.x)*(beacon10.y-beacon11.y) - (beacon10.x-beacon11.x)*(beacon11.y-beacon50.y)));
+            let x = (W*(beacon10.y-beacon11.y) - Z*(beacon11.y-beacon50.y)) / (2 * ((beacon11.x-beacon50.x)*(beacon10.y-beacon11.y) - (beacon10.x-beacon11.x)*(beacon11.y-beacon50.y)))
             let y = (W - 2*x*(beacon11.x-beacon50.x)) / (2*(beacon11.y-beacon50.y))
             //y2 is a second measure of y to mitigate errors
             let y2 = ((Z - 2*x*(beacon10.x-beacon11.x)) / (2*(beacon10.y-beacon11.y))) + 2
-
-            let y3 = (y + y2) / 2;
+            let y3 = (y + y2) / 2
 
             let value = CGPointMake(x, y2)
            // print(value)
@@ -421,7 +416,6 @@ class BeaconList: ObservableObject {
                             self.beacons[i].mTTC = Double(timeToColision)
                         }
 //                        print(timeToColision, frontValuet1, frontValuet2, self.beacons[i].finalTTC)
-                    
                         
                     }
                     
@@ -441,6 +435,12 @@ class BeaconList: ObservableObject {
                     if tempElapsed >= 10 {
 //                        print(tempElapsed, tempDistance, self.beacons[i].finalTTC)
                         NotificationService.shared.createNotifcation()
+                        
+                        toggleTorch(on: true)
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            toggleTorch(on: false)
+                        }
                     }
                         print("Avg. Speed", String(format: "%.2f", self.beacons[i].speed),
                               "Spot speed", String(format: "%.2f", self.beacons[i].spotspeed),
@@ -599,8 +599,6 @@ class BeaconList: ObservableObject {
                 }
                 
             }
-                
-                      
                 dataHelper.buildData(deviceId: self.beacons[i].publicID)
                 
                 let ttcPath = dataHelper.getTimeToCollisionPath()
@@ -651,13 +649,13 @@ class BeaconList: ObservableObject {
                 FirebaseManager.shared.storeData(data: mTTCData)
                 FirebaseManager.shared.storeData(data: spotSpeedData)
                 FirebaseManager.shared.storeData(data: prevSpeedData)
-                
-                
+
                 break
             }
         }
     }
 }
+
 import CoreLocation
 
 struct MovingView: View{
@@ -673,10 +671,27 @@ struct MovingView: View{
     }
 }
 
+func toggleTorch(on: Bool) {
+    guard let device = AVCaptureDevice.default(for: .video) else { return }
+    if device.hasTorch {
+        do {
+            try device.lockForConfiguration()
+
+            device.torchMode = on ? .on : .off
+
+            device.unlockForConfiguration()
+        } catch {
+            print("Torch could not be used")
+        }
+    } else {
+        print("Torch is not available")
+    }
+}
 
 struct BeaconListView: View {
     @ObservedObject var list: BeaconList
-    
+    @State var torch = false
+
     var body: some View {
         
         VStack{
