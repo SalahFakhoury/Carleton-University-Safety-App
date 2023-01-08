@@ -186,6 +186,56 @@ class BeaconList: ObservableObject {
 //                print(value)
             }
             
+            if firstBeaconDistance > 0 && secondBeaconDistance > 0 && thirdBeaconDistance > 0 &&
+                fourthBeaconDistance > 0 && self.beacons.count == 4{
+               
+                let dist1 = firstBeaconDistance
+                let dist2 = secondBeaconDistance
+                let dist3 = thirdBeaconDistance
+                let dist4 = fourthBeaconDistance
+
+                let arrDist = [firstBeaconDistance, secondBeaconDistance, thirdBeaconDistance, fourthBeaconDistance] // line 35
+                
+                let point1 = CGPoint(x: 0, y: 0)
+                let point2 = CGPoint(x: CGFloat(dist2), y: 0)
+                let point3 = CGPoint(x: 0, y: CGFloat(dist3))
+                let point4 = CGPoint(x: CGFloat(dist4), y: CGFloat(dist4))
+                
+                let arrPoints = [point1, point2, point3, point4] // line 34
+                
+                let l = arrPoints.count // line 23
+                let S = arrDist.reduce(0, +) // line 24
+             
+                var W = [Float]()
+                for w in arrDist{
+                    let value = (Float(l - 1) * S) / (S - w)
+                    W.append(value)
+                } // line 26
+                
+                
+                var points = [CGPoint]()
+                var pointsX = [CGFloat]()
+                var pointsY = [CGFloat]()
+                for i in 0..<l{
+                    let point = arrPoints[i]
+                    
+                    let valueX = point.x * CGFloat(W[i])
+                    let valueY = point.y * CGFloat(W[i])
+                    
+                    pointsX.append(valueX)
+                    pointsY.append(valueY)
+                    
+                    let value = CGPointMake(valueX, valueY)
+                    points.append(value)
+                }
+                
+                let pointX = pointsX.reduce(0, +)
+                let pointY = pointsY.reduce(0, +)
+                
+                let finalPoint = CGPointMake(pointX, pointY)
+                print(finalPoint)  // line 28
+                
+            }
             
             // Distance and position wrt static values
             let firstDistance = 4.70
@@ -442,14 +492,14 @@ class BeaconList: ObservableObject {
                             toggleTorch(on: false)
                         }
                     }
-                        print("Avg. Speed", String(format: "%.2f", self.beacons[i].speed),
-                              "Spot speed", String(format: "%.2f", self.beacons[i].spotspeed),
-                              "Previous speed", String(format: "%.2f", self.beacons[i].PreviosSpeedwithoutupdate),
-                              "distance", String(format: "%.2f", self.beacons[i].distance),
-                              "acceleration", String(format: "%.2f", self.beacons[i].accelaration),
-                              "finalTTC", String(format: "%.2f", self.beacons[i].finalTTC),
-                              "timeToColision", String(format: "%.2f", self.beacons[i].timeToColision),
-                              "MTTC", String(format: "%.2f", self.beacons[i].mTTC))
+//                        print("Avg. Speed", String(format: "%.2f", self.beacons[i].speed),
+//                              "Spot speed", String(format: "%.2f", self.beacons[i].spotspeed),
+//                              "Previous speed", String(format: "%.2f", self.beacons[i].PreviosSpeedwithoutupdate),
+//                              "distance", String(format: "%.2f", self.beacons[i].distance),
+//                              "acceleration", String(format: "%.2f", self.beacons[i].accelaration),
+//                              "finalTTC", String(format: "%.2f", self.beacons[i].finalTTC),
+//                              "timeToColision", String(format: "%.2f", self.beacons[i].timeToColision),
+//                              "MTTC", String(format: "%.2f", self.beacons[i].mTTC))
                         
                         
 //                        "%.2f", String(format: "%.2f", "%.2f", "%.2f", "%.2f", "%.2f", "%.2f", "%.2f", "%.2f",
