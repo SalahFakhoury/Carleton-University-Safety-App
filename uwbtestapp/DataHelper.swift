@@ -15,7 +15,7 @@ class DataHelper {
     private let distanceKey = "Distance"
     private let rssiKey = "rssi"
     
-    private let speedKey = "Avg. Speed"
+    private let speedKey = "Avg Speed"
     private let prevSpeedKey = "Previous Speed"
     private let spotSpeedKey = "Spot Speed"
     private let beaconLocKey = "Coordinate"

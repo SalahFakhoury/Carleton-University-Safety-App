@@ -29,8 +29,16 @@ struct BeaconItem: Identifiable {
     var PreviosSpeedwithoutupdate : Double = 0.0
 }
 
+struct BeaconMulti: Identifiable {
+    let id = UUID()
+    var x: Float = 0.0
+    var y: Float = 0.0
+    var distance: Float = 0.0
+}
+
 class BeaconList: ObservableObject {
     @Published var beacons: [BeaconItem]
+    @Published var beaconsMulti : [BeaconMulti]
     var totalMinutes = 0
     var firstBeaconDistance : Float = 0
     var secondBeaconDistance : Float = 0
@@ -200,6 +208,29 @@ class BeaconList: ObservableObject {
                 let point2 = CGPoint(x: CGFloat(dist2), y: 0)
                 let point3 = CGPoint(x: 0, y: CGFloat(dist3))
                 let point4 = CGPoint(x: CGFloat(dist4), y: CGFloat(dist4))
+                
+                beaconsMulti[0].distance = firstBeaconDistance
+                beaconsMulti[0].x = 0
+                beaconsMulti[0].y = 0
+                
+                beaconsMulti[1].distance = secondBeaconDistance
+                beaconsMulti[1].x = dist2
+                beaconsMulti[1].y = 0
+                
+                beaconsMulti[2].distance = thirdBeaconDistance
+                beaconsMulti[2].x = 0
+                beaconsMulti[2].y = dist3
+                
+                beaconsMulti[3].distance = fourthBeaconDistance
+                beaconsMulti[3].x = dist4
+                beaconsMulti[3].y = dist4
+                
+                //var A = matrix_float2x2(Float(beaconsMulti.count), 2.0)
+                //var B = Vector(beaconsMulti.map {$0.distance})
+                
+                
+                
+                
                 
                 let arrPoints = [point1, point2, point3, point4] // line 34
                 
