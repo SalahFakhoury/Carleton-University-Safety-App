@@ -23,7 +23,7 @@ struct uwbappApp: App {
     // register app delegate for Firebase setup
       @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
 
-    let list: BeaconList = BeaconList(items: [])
+    let list: BeaconList = BeaconList(items: [], value: [])
     var body: some Scene {
         WindowGroup {
             ContentView(beaconList: list)

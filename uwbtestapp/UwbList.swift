@@ -7,6 +7,8 @@
 import SwiftUI
 import EstimoteUWB
 import AVFoundation
+import Accelerate
+
 
 struct BeaconItem: Identifiable {
     let id = UUID()
@@ -58,10 +60,12 @@ class BeaconList: ObservableObject {
     var prevAvgSpeed: Double = 0.0
     
     
-    init(items: [BeaconItem]) {
+    init(items: [BeaconItem], value:[BeaconMulti]) {
         beacons = items
+        beaconsMulti = value
     }
     
+   
     func addBeacon(beacon: BeaconItem) {
         self.beacons.append(beacon)
     }
@@ -225,12 +229,136 @@ class BeaconList: ObservableObject {
                 beaconsMulti[3].x = dist4
                 beaconsMulti[3].y = dist4
                 
-                //var A = matrix_float2x2(Float(beaconsMulti.count), 2.0)
-                //var B = Vector(beaconsMulti.map {$0.distance})
+                let rows = beaconsMulti.count
+                let columns = 2
+                var A = [[Float]](repeating: [Float](repeating: 0, count: columns), count: rows)
+               
+                let B = [beaconsMulti.map { $0.distance }]
+
+                var X = [Float](repeating: 0, count: 2)
+                
+                for (i, beacon) in beaconsMulti.enumerated() {
+                    A[i][0] = beacon.x
+                    A[i][1] = beacon.y
+                  }
+               
                 
                 
+                // Transpose of A
+//                let At = A.map { $0.map { $1 } }
+                let At = A[0].enumerated().map { (column, _) in
+                    A.map { $0[column] }
+                }
+                // A.transpose() * A
+                var AtA = [[Float]](repeating: [Float](repeating: 0, count: A[0].count), count: A[0].count)
+                for i in 0..<AtA.count {
+                    for j in 0..<AtA[i].count {
+                        for k in 0..<At.count {
+                            AtA[i][j] += At[i][k] * A[k][j]
+                        }
+                    }
+                }
+
+                // Inverse of (A.transpose() * A)
+                let AtAInverse = AtA.inverse()//inverse(AtA)
+
+                // (A.transpose() * A).inverse() * A.transpose()
+                var AtAInverseAt = [[Float]](repeating: [Float](repeating: 0, count: AtAInverse.count), count: At.count)
+                for i in 0..<AtAInverseAt.count {
+                    for j in 0..<AtAInverseAt[i].count {
+                        for k in 0..<AtAInverse.count {
+                            AtAInverseAt[i][j] += AtAInverse[i][k] * At[k][j]
+                        }
+                    }
+                }
+
+                // (A.transpose() * A).inverse() * A.transpose() * B
+                var result = [Float](repeating: 0, count: B.count)
+                for i in 0..<result.count {
+                    for j in 0..<AtAInverseAt.count {
+                        result[i] += AtAInverseAt[j][i] * B[j]
+                    }
+                }
                 
                 
+                /*
+                // Transpose of A
+                var At = [[Float]](repeating: [Float](repeating: 0, count: A.count), count: A[0].count)
+                for i in 0..<A.count {
+                    for j in 0..<A[i].count {
+                        At[j][i] = A[i][j]
+                    }
+                }
+
+                // A transpose * A
+                var AtA = [[Float]](repeating: [Float](repeating: 0, count: A[0].count), count: A[0].count)
+                for i in 0..<AtA.count {
+                    for j in 0..<AtA[i].count {
+                        for k in 0..<A.count {
+                            AtA[i][j] += At[i][k] * A[k][j]
+                        }
+                    }
+                }
+
+                // Inverse of A transpose * A
+                var invAtA = [[Float]](repeating: [Float](repeating: 0, count: AtA.count), count: AtA[0].count)
+                // You can implement the inverse of matrix by using the Gaussian-Jordan elimination method
+
+                // A transpose * B
+                var AtB = [Float](repeating: 0, count: A[0].count)
+                for i in 0..<AtB.count {
+                    for j in 0..<A.count {
+                        AtB[i] += At[i][j] * B[j]
+                    }
+                }
+
+                // X = (A transpose * A)^-1 * A transpose * B
+                var asdf = [Float](repeating: 0, count: A[0].count)
+                for i in 0..<X.count {
+                    for j in 0..<invAtA.count {
+                        X[i] += invAtA[i][j] * AtB[j]
+                    }
+                }*/
+                
+                /*
+                //let X = (A.transposed() * A).inverse() * A.transposed() * B
+
+                // A.transposed()
+                let AT = A[0].enumerated().map { (column, _) in
+                    A.map { $0[column] }
+                }
+                
+                // (A.transposed() * A)
+                let transposed = AT.map { row in
+                    A[0].enumerated().map { (column, _) in
+                        row.enumerated().reduce(0) { (result, columnIndexAndValue) in
+                            result + columnIndexAndValue.element * A[columnIndexAndValue.offset][column]
+                        }
+                    }
+                }
+                
+                //(A.transposed() * A).inverse()
+                let inverseValue = transposed.inverse()
+                
+//                A.transposed() * B
+                let transposedWithB = AT.map { row in
+                    B[0].enumerated().map { (column, _) in
+                        row.enumerated().reduce(0) { (result, columnIndexAndValue) in
+                            result + columnIndexAndValue.element * B[columnIndexAndValue.offset][column]
+                        }
+                    }
+                }
+                
+//                (A.transposed() * A).inverse() * A.transposed() * B
+                X = inverseValue.map { row in
+                    transposedWithB[0].enumerated().map { (column, _) in
+                        row.enumerated().reduce(0) { (result, columnIndexAndValue) in
+                            result + columnIndexAndValue.element * transposedWithB[columnIndexAndValue.offset][column]
+                        }
+                    }
+                }!
+                
+                print(X[0],X[1]) */
                 
                 let arrPoints = [point1, point2, point3, point4] // line 34
                 
@@ -264,7 +392,7 @@ class BeaconList: ObservableObject {
                 let pointY = pointsY.reduce(0, +)
                 
                 let finalPoint = CGPointMake(pointX, pointY)
-                print(finalPoint)  // line 28
+//                print(finalPoint)  // line 28
                 
             }
             
@@ -736,7 +864,34 @@ class BeaconList: ObservableObject {
         }
     }
 }
+extension Array where Element == Array<Float> {
+    func inverse() -> [[Float]] {
+        let n = self.count
+        var a = self
+        var b = [[Float]](repeating: [Float](repeating: 0.0, count: n), count: n)
+        for i in 0..<n {
+            b[i][i] = 1.0
+        }
 
+        for i in 0..<n {
+            let pivot = a[i][i]
+            if pivot == 0 { return [[0.0]] }
+            for j in 0..<n {
+                a[i][j] /= pivot
+                b[i][j] /= pivot
+            }
+            for k in 0..<n {
+                if k == i { continue }
+                let t = a[k][i]
+                for j in 0..<n {
+                    a[k][j] -= t * a[i][j]
+                    b[k][j] -= t * b[i][j]
+                }
+            }
+        }
+        return b
+    }
+}
 import CoreLocation
 
 struct MovingView: View{
@@ -935,7 +1090,19 @@ func getview() -> BeaconListView {
         BeaconItem(name: ""),
         BeaconItem(name: ""),
     ]
-    let list: BeaconList = BeaconList(items: dataSource)
+    
+    let dataSourceMulti: [BeaconMulti] = [
+        BeaconMulti(x:0.0, y: 0.0, distance: 0.0),
+        BeaconMulti(x:0.0, y: 0.0, distance: 0.0),
+        BeaconMulti(x:0.0, y: 0.0, distance: 0.0),
+        BeaconMulti(x:0.0, y: 0.0, distance: 0.0),
+        BeaconMulti(x:0.0, y: 0.0, distance: 0.0),
+        BeaconMulti(x:0.0, y: 0.0, distance: 0.0),
+        BeaconMulti(x:0.0, y: 0.0, distance: 0.0),
+        BeaconMulti(x:0.0, y: 0.0, distance: 0.0),
+    ]
+    
+    let list: BeaconList = BeaconList(items: dataSource, value: dataSourceMulti)
     let TestView: BeaconListView = BeaconListView(list: list)
     return TestView
 }

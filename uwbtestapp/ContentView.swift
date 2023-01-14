@@ -101,6 +101,15 @@ struct ContentView_Previews: PreviewProvider {
                 BeaconItem(name: ""),
                 BeaconItem(name: ""),
                 BeaconItem(name: ""),
+        ], value: [
+            BeaconMulti(x:0.0, y: 0.0, distance: 0.0),
+            BeaconMulti(x:0.0, y: 0.0, distance: 0.0),
+            BeaconMulti(x:0.0, y: 0.0, distance: 0.0),
+            BeaconMulti(x:0.0, y: 0.0, distance: 0.0),
+            BeaconMulti(x:0.0, y: 0.0, distance: 0.0),
+            BeaconMulti(x:0.0, y: 0.0, distance: 0.0),
+            BeaconMulti(x:0.0, y: 0.0, distance: 0.0),
+            BeaconMulti(x:0.0, y: 0.0, distance: 0.0),
         ]))
     }
 }
