@@ -242,7 +242,7 @@ class BeaconList: ObservableObject {
                     A[i][1] = beacon.y
                   }
                
-                
+                /* First attempt
                 
                 // Transpose of A
 //                let At = A.map { $0.map { $1 } }
@@ -278,10 +278,10 @@ class BeaconList: ObservableObject {
                     for j in 0..<AtAInverseAt.count {
                         result[i] += AtAInverseAt[j][i] * B[j]
                     }
-                }
+                } */
                 
                 
-                /*
+                /* Second attempt
                 // Transpose of A
                 var At = [[Float]](repeating: [Float](repeating: 0, count: A.count), count: A[0].count)
                 for i in 0..<A.count {
@@ -320,7 +320,7 @@ class BeaconList: ObservableObject {
                     }
                 }*/
                 
-                /*
+                /* third attempt
                 //let X = (A.transposed() * A).inverse() * A.transposed() * B
 
                 // A.transposed()
@@ -651,22 +651,7 @@ class BeaconList: ObservableObject {
                             toggleTorch(on: false)
                         }
                     }
-//                        print("Avg. Speed", String(format: "%.2f", self.beacons[i].speed),
-//                              "Spot speed", String(format: "%.2f", self.beacons[i].spotspeed),
-//                              "Previous speed", String(format: "%.2f", self.beacons[i].PreviosSpeedwithoutupdate),
-//                              "distance", String(format: "%.2f", self.beacons[i].distance),
-//                              "acceleration", String(format: "%.2f", self.beacons[i].accelaration),
-//                              "finalTTC", String(format: "%.2f", self.beacons[i].finalTTC),
-//                              "timeToColision", String(format: "%.2f", self.beacons[i].timeToColision),
-//                              "MTTC", String(format: "%.2f", self.beacons[i].mTTC))
-                        
-                        
-//                        "%.2f", String(format: "%.2f", "%.2f", "%.2f", "%.2f", "%.2f", "%.2f", "%.2f", "%.2f",
-                    let redRange = 0.0...1.0
-                    let yellowRange = 1.1...2.0
-                    let greenRange = 2.1...3.0
-                    
-                    
+    
                     if self.beacons[i].finalTTC >= 0 && self.beacons[i].finalTTC <= 1{
                         self.beacons[i].levelColor = .red
                         self.beacons[i].isLevelOn = true
@@ -1019,7 +1004,17 @@ struct BeaconListView: View {
             
         }
        
-        
+        //                        print("Avg. Speed", String(format: "%.2f", self.beacons[i].speed),
+        //                              "Spot speed", String(format: "%.2f", self.beacons[i].spotspeed),
+        //                              "Previous speed", String(format: "%.2f", self.beacons[i].PreviosSpeedwithoutupdate),
+        //                              "distance", String(format: "%.2f", self.beacons[i].distance),
+        //                              "acceleration", String(format: "%.2f", self.beacons[i].accelaration),
+        //                              "finalTTC", String(format: "%.2f", self.beacons[i].finalTTC),
+        //                              "timeToColision", String(format: "%.2f", self.beacons[i].timeToColision),
+        //                              "MTTC", String(format: "%.2f", self.beacons[i].mTTC))
+                                
+                                
+        //                        "%.2f", String(format: "%.2f", "%.2f", "%.2f", "%.2f", "%.2f", "%.2f", "%.2f", "%.2f",
         
 //        ScrollView{
 //            VStack {
