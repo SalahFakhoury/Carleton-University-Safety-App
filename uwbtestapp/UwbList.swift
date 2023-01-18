@@ -242,7 +242,7 @@ class BeaconList: ObservableObject {
                     A[i][1] = beacon.y
                   }
                
-                /* First attempt
+                // First attempt
                 
                 // Transpose of A
 //                let At = A.map { $0.map { $1 } }
@@ -273,14 +273,14 @@ class BeaconList: ObservableObject {
                 }
 
                 // (A.transpose() * A).inverse() * A.transpose() * B
-                var result = [Float](repeating: 0, count: B.count)
-                for i in 0..<result.count {
+                X = [Float](repeating: 0, count: B.count)
+                for i in 0..<X.count {
                     for j in 0..<AtAInverseAt.count {
-                        result[i] += AtAInverseAt[j][i] * B[j]
+                        X[i] += AtAInverseAt[j][i] * B[j][i]
                     }
-                } */
+                }
                 
-                
+                print(X[0],X[1])
                 /* Second attempt
                 // Transpose of A
                 var At = [[Float]](repeating: [Float](repeating: 0, count: A.count), count: A[0].count)
