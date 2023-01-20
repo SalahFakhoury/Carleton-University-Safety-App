@@ -20,7 +20,10 @@ struct ContentView: View {
     let points = [(12.0, 10.0), (22.0, 20.0), (32.0, 30.0),(42.0, 40.0),(52.0, 50.0),(62.0, 60.0)].map({CGPoint(x: $0.0, y: $0.1)})
 
     let beaconList: BeaconList
+    
     let uwbManger: UWBManager
+    
+    
     init(beaconList: BeaconList) {
         self.beaconList = beaconList
         self.uwbManger = UWBManager { arg in
@@ -36,11 +39,22 @@ struct ContentView: View {
                 let CLocation  = CLLocation(latitude: Double(arg.vector?.x ?? 0.0), longitude: Double(arg.vector?.y ?? 0.0))
                 newBeaconItem.speed = CLocation.speed.magnitude
                 beaconList.addBeacon(beacon: newBeaconItem)
+                
+                
+                
+                var newBeaconMulti: BeaconMulti = BeaconMulti()
+                newBeaconMulti.distance = 0.0
+                newBeaconMulti.x = 0.0
+                newBeaconMulti.y = 0.0
+                beaconList.addBeaconMulti(beaconMulti: newBeaconMulti)
+                
+                
             }
         } beaconDisconnectCallBack: { arg in
             beaconList.removeBeacon(publicID: arg)
         }
     }
+   
     var body: some View {
         VStack {
             HStack(){

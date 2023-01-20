@@ -61,6 +61,7 @@ class BeaconList: ObservableObject {
     
     
     init(items: [BeaconItem], value:[BeaconMulti]) {
+        
         beacons = items
         beaconsMulti = value
     }
@@ -68,6 +69,10 @@ class BeaconList: ObservableObject {
    
     func addBeacon(beacon: BeaconItem) {
         self.beacons.append(beacon)
+    }
+    
+    func addBeaconMulti(beaconMulti: BeaconMulti){
+        self.beaconsMulti.append(beaconMulti)
     }
     
     func removeBeacon(publicID: String) {
@@ -260,7 +265,7 @@ class BeaconList: ObservableObject {
                 }
 
                 // Inverse of (A.transpose() * A)
-                let AtAInverse = AtA.inverse()//inverse(AtA)
+                let AtAInverse = AtA//inverse(AtA)
 
                 // (A.transpose() * A).inverse() * A.transpose()
                 var AtAInverseAt = [[Float]](repeating: [Float](repeating: 0, count: AtAInverse.count), count: At.count)
@@ -276,11 +281,11 @@ class BeaconList: ObservableObject {
                 X = [Float](repeating: 0, count: B.count)
                 for i in 0..<X.count {
                     for j in 0..<AtAInverseAt.count {
-                        X[i] += AtAInverseAt[j][i] * B[j][i]
+                        X[i] += AtAInverseAt[j][i] * B[i][i]
                     }
                 }
                 
-                print(X[0],X[1])
+                print(X)
                 /* Second attempt
                 // Transpose of A
                 var At = [[Float]](repeating: [Float](repeating: 0, count: A.count), count: A[0].count)
