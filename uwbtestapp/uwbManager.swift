@@ -34,7 +34,7 @@ extension UWBManager: UWBPositioningObserver {
         let currentTime = Date()
         
         if (currentTime.timeIntervalSince(previousTime) * 1000) < 100.0 { // arafat: due to skip less than 100 ms data
-            print("Skip this time because of less than 100ms")
+//            print("Skip this time because of less than 100ms")
             previousTime = currentTime
             return
         }

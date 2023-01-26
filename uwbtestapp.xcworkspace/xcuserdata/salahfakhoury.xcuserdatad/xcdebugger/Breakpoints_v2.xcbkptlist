@@ -7,15 +7,63 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "C97F3779-AA04-4A58-92AA-F25A8EEBE21D"
+            uuid = "78C73FBF-AF26-4F57-A0C9-79A16744B5F6"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "uwbtestapp/UwbList.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "209"
-            endingLineNumber = "209"
+            startingLineNumber = "1262"
+            endingLineNumber = "1262"
+            landmarkName = "vectorProduct(vector:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E03C0A6B-6AF7-4595-9A89-D0C72079DBC4"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "uwbtestapp/UwbList.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1268"
+            endingLineNumber = "1268"
+            landmarkName = "vectorProduct(vector:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "FC61E95F-72B7-4743-86CF-09D30DB55D6B"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "uwbtestapp/UwbList.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1254"
+            endingLineNumber = "1254"
+            landmarkName = "vectorProduct(vector:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "483E1C33-828D-4B59-A6F3-77F0125F1AD6"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "uwbtestapp/UwbList.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "243"
+            endingLineNumber = "243"
             landmarkName = "updateBeaconVector(publicID:vector:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -23,175 +71,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "38A9802D-5DA2-49C2-BA81-B4A596EC76C5"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "uwbtestapp/UwbList.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "65"
-            endingLineNumber = "65"
-            landmarkName = "init(items:value:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "7EDCC4B0-D6DD-4772-84E7-70A3FFDCFB96"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "uwbtestapp/UwbList.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1105"
-            endingLineNumber = "1105"
-            landmarkName = "getview()"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "34B98D94-F1F3-4091-9385-E08581A95B46"
+            uuid = "009A1CE0-2745-4703-8631-964C94A1347B"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "uwbtestapp/UwbList.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1114"
-            endingLineNumber = "1114"
-            landmarkName = "previews"
-            landmarkType = "24">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "C597DF7B-FEAF-42B6-8719-AF85766BCA27"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "uwbtestapp/UwbList.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "14"
-            endingLineNumber = "14"
-            landmarkName = "BeaconItem"
-            landmarkType = "14">
-            <Locations>
-               <Location
-                  uuid = "C597DF7B-FEAF-42B6-8719-AF85766BCA27 - af9bb81f6939cd13"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Carleton_University_Safety_App.BeaconItem.init() -&gt; Carleton_University_Safety_App.BeaconItem"
-                  moduleName = "Carleton University Safety App"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/salahfakhoury/Desktop/Carleton-University-Safety-App/uwbtestapp/UwbList.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "14"
-                  endingLineNumber = "14"
-                  offsetFromSymbolStart = "180">
-               </Location>
-               <Location
-                  uuid = "C597DF7B-FEAF-42B6-8719-AF85766BCA27 - 562fc280c577c5dd"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Carleton_University_Safety_App.BeaconItem.init(publicID: Swift.String, distance: Swift.Float, vector: Swift.Optional&lt;EstimoteUWB.Vector&gt;, name: Swift.String, speed: Swift.Double, date: Swift.String, distanceOverTime: Swift.Float, accelaration: Swift.Double, levelColor: SwiftUI.Color, isLevelOn: Swift.Bool, finalTTC: Swift.Double, mTTC: Swift.Double, finalTTCType: Swift.String, timeToColision: Swift.Double, spotspeed: Swift.Double, previousSpeed: Swift.Double, PreviosSpeedwithoutupdate: Swift.Double) -&gt; Carleton_University_Safety_App.BeaconItem"
-                  moduleName = "Carleton University Safety App"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/salahfakhoury/Desktop/Carleton-University-Safety-App/uwbtestapp/UwbList.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "14"
-                  endingLineNumber = "14"
-                  offsetFromSymbolStart = "120">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "576BD734-FE8F-464E-B7D8-393F79A282DC"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "uwbtestapp/UwbList.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "35"
-            endingLineNumber = "35"
-            landmarkName = "BeaconMulti"
-            landmarkType = "14">
-            <Locations>
-               <Location
-                  uuid = "576BD734-FE8F-464E-B7D8-393F79A282DC - e226010d096e99d2"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Carleton_University_Safety_App.BeaconMulti.init() -&gt; Carleton_University_Safety_App.BeaconMulti"
-                  moduleName = "Carleton University Safety App"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/salahfakhoury/Desktop/Carleton-University-Safety-App/uwbtestapp/UwbList.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "35"
-                  endingLineNumber = "35"
-                  offsetFromSymbolStart = "96">
-               </Location>
-               <Location
-                  uuid = "576BD734-FE8F-464E-B7D8-393F79A282DC - 8a2b9f0ec815387"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Carleton_University_Safety_App.BeaconMulti.init(x: Swift.Float, y: Swift.Float, distance: Swift.Float) -&gt; Carleton_University_Safety_App.BeaconMulti"
-                  moduleName = "Carleton University Safety App"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/salahfakhoury/Desktop/Carleton-University-Safety-App/uwbtestapp/UwbList.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "35"
-                  endingLineNumber = "35"
-                  offsetFromSymbolStart = "28">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "DB2B990D-206A-4E87-A5AB-326757D0EE48"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "uwbtestapp/ContentView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "43"
-            endingLineNumber = "43"
-            landmarkName = "init(beaconList:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "3A153626-775A-476D-B823-103CB57F5E20"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "uwbtestapp/UwbList.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "221"
-            endingLineNumber = "221"
+            startingLineNumber = "252"
+            endingLineNumber = "252"
             landmarkName = "updateBeaconVector(publicID:vector:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -199,15 +87,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "262D7F60-3C55-472E-ACEB-8E1BCCD19DC0"
-            shouldBeEnabled = "Yes"
+            uuid = "E6724137-93A9-4691-94C2-84F63E03250D"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "uwbtestapp/UwbList.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "288"
-            endingLineNumber = "288"
+            startingLineNumber = "246"
+            endingLineNumber = "246"
             landmarkName = "updateBeaconVector(publicID:vector:)"
             landmarkType = "7">
          </BreakpointContent>

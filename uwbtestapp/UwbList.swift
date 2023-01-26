@@ -238,8 +238,8 @@ class BeaconList: ObservableObject {
                 let columns = 2
                 var A = [[Float]](repeating: [Float](repeating: 0, count: columns), count: rows)
                
-                let B = [beaconsMulti.map { $0.distance }]
-
+                let B = beaconsMulti.map { $0.distance }
+//                let Bs = [Float](repeating: 0, count: 2)//        [beaconsMulti.map { $0.distance }]
                 var X = [Float](repeating: 0, count: 2)
                 
                 for (i, beacon) in beaconsMulti.enumerated() {
@@ -263,8 +263,15 @@ class BeaconList: ObservableObject {
                 //Vector multiplication of AtAInverseAt and B
                 X = AtAInverseAt!.vectorProduct(vector: B)
 
-                
-                print(X[0],X[1])
+                if X.count > 1{
+                    let x = String(format:"%0.2f",X[0])
+                    let y = String(format:"%0.2f",X[1])
+                    print(x,y)
+                }
+//                if X.count > 0{
+//                    print(X[0])
+//                }
+//                print(X.count)
               /*
                 // First attempt
                 
@@ -1237,18 +1244,30 @@ extension Array where Element == Array<Float> {
 }
 
 extension Array where Element == Array<Float> {
-    func vectorProduct(vector: [[Float]]) -> [Float] {
-            guard self.count > 0 && self[0].count > 0 && vector.count > 0 && self[0].count == vector.count else {
-                return [Float]()
+    func vectorProduct(vector: [Float]) -> [Float] {
+        //            guard self.count > 0 && self[0].count > 0 && vector.count > 0 && self[0].count == vector.count else {
+        //                return [Float]()
+        //            }
+        let rows = self.count
+        let columns = vector.count
+        var result = [Float](repeating: 0, count: rows)
+        for i in 0..<rows {
+            for j in 0..<columns {
+                result[i] += self[i][j] * vector[i]
             }
-            let rows = self.count
-            let columns = vector.count
-            var result = [Float](repeating: 0, count: rows)
-            for i in 0..<rows {
-                for j in 0..<columns {
-                    result[i] += self[i][j] * vector[i][j]
-                }
-            }
-            return result
         }
+      
+//        for i in 0..<rows {
+//            for j in 0..<columns {
+//                result[j] += self[j][i] * vector[j][i]
+//            }
+//        }
+        
+//                for i in 0..<columns {
+//                    for j in 0..<rows {
+//                        result[i] += self[i][j] * vector[i][j]
+//                    }
+//                }
+        return result
+    }
 }
