@@ -246,11 +246,31 @@ class BeaconList: ObservableObject {
                     A[i][0] = beacon.x
                     A[i][1] = beacon.y
                   }
-               
+               // Zeroth attempt
+                
+                // Transpose of A
+                let At = A.transposed()
+                
+                // Matrix multiplication of At and A
+                let AtA = At.matrixProduct(matrix: A)
+                
+                // Inverse of AtA
+                let AtAInverse = AtA.inverse()
+                
+                // Matrix multiplication of AtAInverse and At
+                let AtAInverseAt = AtAInverse?.matrixProduct(matrix: At)
+                
+                //Vector multiplication of AtAInverseAt and B
+                X = AtAInverseAt!.vectorProduct(vector: B)
+
+                
+                print(X[0],X[1])
+              /*
                 // First attempt
                 
                 // Transpose of A
 //                let At = A.map { $0.map { $1 } }
+                
                 let At = A[0].enumerated().map { (column, _) in
                     A.map { $0[column] }
                 }
@@ -281,11 +301,14 @@ class BeaconList: ObservableObject {
                 X = [Float](repeating: 0, count: B.count)
                 for i in 0..<X.count {
                     for j in 0..<AtAInverseAt.count {
-                        X[i] += AtAInverseAt[j][i] * B[i][i]
+                        X[i] += AtAInverseAt[j][i] * B[i]
                     }
                 }
                 
                 print(X)
+                */
+                
+                
                 /* Second attempt
                 // Transpose of A
                 var At = [[Float]](repeating: [Float](repeating: 0, count: A.count), count: A[0].count)
@@ -854,34 +877,7 @@ class BeaconList: ObservableObject {
         }
     }
 }
-extension Array where Element == Array<Float> {
-    func inverse() -> [[Float]] {
-        let n = self.count
-        var a = self
-        var b = [[Float]](repeating: [Float](repeating: 0.0, count: n), count: n)
-        for i in 0..<n {
-            b[i][i] = 1.0
-        }
 
-        for i in 0..<n {
-            let pivot = a[i][i]
-            if pivot == 0 { return [[0.0]] }
-            for j in 0..<n {
-                a[i][j] /= pivot
-                b[i][j] /= pivot
-            }
-            for k in 0..<n {
-                if k == i { continue }
-                let t = a[k][i]
-                for j in 0..<n {
-                    a[k][j] -= t * a[i][j]
-                    b[k][j] -= t * b[i][j]
-                }
-            }
-        }
-        return b
-    }
-}
 import CoreLocation
 
 struct MovingView: View{
@@ -1158,4 +1154,101 @@ extension Float {
         let number = NSNumber(value: self)
         return "\(number.decimalValue)"
     }
+}
+extension Array where Element == Array<Float> {
+    func transposed() -> [[Float]] {
+        if self.isEmpty { return [] }
+        let count = self[0].count
+        var transposed = [[Float]](repeating: [Float](repeating: 0, count: self.count), count: count)
+        for (i, row) in self.enumerated() {
+            for (j, item) in row.enumerated() {
+                transposed[j][i] = Float(item)
+            }
+        }
+        return transposed
+    }
+}
+//extension Array where Element == Array<Float> {
+//    func matrixProduct(matrix: [[Float]]) -> [[Float]] {
+//        let rowCount = self.count
+//        let colCount = matrix[0].count
+//        var result = [[Float]](repeating: [Float](repeating: 0, count: colCount), count: rowCount)
+//        for i in 0..<rowCount {
+//            for j in 0..<colCount {
+//                for k in 0..<self[0].count {
+//                    result[i][j] += self[i][k] * matrix[k][j]
+//                }
+//            }
+//        }
+//        return result
+//    }
+//}
+extension Array where Element == Array<Float> {
+    func inverse() -> [[Float]]? {
+        guard self.count == self[0].count else { return nil }
+        let n = self.count
+        var result = self
+        var inverse = [[Float]](repeating: [Float](repeating: 0, count: n), count: n)
+        for i in 0..<n {
+            inverse[i][i] = 1
+        }
+
+        for i in 0..<n {
+            let pivot = result[i][i]
+            if pivot == 0 {
+                return nil
+            }
+            for j in 0..<n {
+                result[i][j] /= pivot
+                inverse[i][j] /= pivot
+            }
+
+            for k in 0..<n {
+                if k != i {
+                    let temp = result[k][i]
+                    for j in 0..<n {
+                        result[k][j] -= result[i][j] * temp
+                        inverse[k][j] -= inverse[i][j] * temp
+                    }
+                }
+            }
+        }
+        return inverse
+    }
+}
+extension Array where Element == Array<Float> {
+    func matrixProduct(matrix: [[Float]]) -> [[Float]] {
+        guard self.count > 0 && self[0].count > 0 && matrix.count > 0 && matrix[0].count > 0 && self[0].count == matrix.count else {
+            return [[Float]]()
+        }
+        let rows = self.count
+        let commonDimension = self[0].count
+        let columns = matrix[0].count
+        var result = [[Float]](repeating: [Float](repeating: 0, count: columns), count: rows)
+        for i in 0..<rows {
+            for j in 0..<columns {
+                for k in 0..<commonDimension {
+                    result[i][j] += self[i][k] * matrix[k][j]
+                }
+            }
+        }
+        return result
+    }
+}
+
+extension Array where Element == Array<Float> {
+    func vectorProduct(vector: [[Float]]) -> [Float] {
+            guard self.count > 0 && self[0].count > 0 && vector.count > 0 && self[0].count == vector.count else {
+                return [Float]()
+            }
+            let rows = self.count
+            let columns = vector.count
+            var result = [Float](repeating: 0, count: rows)
+            for i in 0..<rows {
+                for j in 0..<columns {
+                    result[i] += self[i][j] * vector[i][j]
+                }
+            }
+            return result
+        }
 }
