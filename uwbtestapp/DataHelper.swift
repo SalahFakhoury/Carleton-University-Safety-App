@@ -24,6 +24,8 @@ class DataHelper {
     private let mttcKey = "MTTC"
     private let lastDate = Date()
     
+    private let coordinateX = "x"
+    private let coordinateY = "y"
     
     private var path: String = "Salah/Path"
     
@@ -57,6 +59,22 @@ class DataHelper {
         self.dateFormatter.dateFormat = self.timeFString
         let curTimeString = self.dateFormatter.string(from: date)
         self.path = "\(deviceId)/\(currentDateString)/\(curTimeString)"
+    }
+    
+    func buildDataForCoordinate() {
+        self.dateFormatter.dateFormat = self.dateFString
+        let date = Date()
+        let currentDateString = self.dateFormatter.string(from: date)
+        
+//        let diff = Calendar.current.dateComponents([.second], from: date, to: lastDate)
+//        let miliseconds = (diff.second ?? 0) * 1000
+//        if miliseconds > 50{
+//
+//        }
+        
+        self.dateFormatter.dateFormat = self.timeFString
+        let curTimeString = self.dateFormatter.string(from: date)
+        self.path = "\("Coordinates")/\(currentDateString)/\(curTimeString)"
     }
     
     func getCurrentDateString()->String {
@@ -111,6 +129,14 @@ class DataHelper {
     
     func getBeaconLocationPath() -> String{
         return "\(path)/\(beaconLocKey)"
+    }
+    
+    func getCoordinateXPath() -> String{
+        return "\(path)/\(coordinateX)"
+    }
+    
+    func getCoordinateYPath() -> String{
+        return "\(path)/\(coordinateY)"
     }
     
     func getTimeToCollisionPath() -> String{

@@ -61,7 +61,6 @@ class BeaconList: ObservableObject {
     
     
     init(items: [BeaconItem], value:[BeaconMulti]) {
-        
         beacons = items
         beaconsMulti = value
     }
@@ -245,7 +244,7 @@ class BeaconList: ObservableObject {
                 for (i, beacon) in beaconsMulti.enumerated() {
                     A[i][0] = beacon.x
                     A[i][1] = beacon.y
-                  }
+                }
                // Zeroth attempt
                 
                 // Transpose of A
@@ -264,9 +263,23 @@ class BeaconList: ObservableObject {
                 X = AtAInverseAt!.vectorProduct(vector: B)
 
                 if X.count > 1{
-                    let x = String(format:"%0.2f",X[0])
-                    let y = String(format:"%0.2f",X[1])
-                    print(x,y)
+                    
+                    let dataHelper = DataHelper()
+                    dataHelper.buildDataForCoordinate()
+                    
+                    let xPath = dataHelper.getCoordinateXPath()
+                    let yPath = dataHelper.getCoordinateYPath()
+
+                    let strX = String(format:"%0.2f",X[0])
+                    let strY = String(format:"%0.2f",X[1])
+
+                    let xData = DataInfo(path: xPath, dataString: "\(strX)")
+                    let yData = DataInfo(path: yPath, dataString: "\(strY)")
+                    
+                    FirebaseManager.shared.storeData(data: xData)
+                    FirebaseManager.shared.storeData(data: yData)
+
+                    print(strX,strY)
                 }
 //                if X.count > 0{
 //                    print(X[0])
